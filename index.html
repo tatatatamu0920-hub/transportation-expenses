@@ -31,6 +31,42 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
         }
 
+        /* モバイル向けテーブル改善スタイル */
+        @media (max-width: 640px) {
+            .responsive-table thead {
+                display: none; /* ヘッダーを隠す */
+            }
+            .responsive-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                padding: 1rem;
+                border: 1px solid #f1f3f9;
+                border-radius: 16px;
+                background: white;
+            }
+            .responsive-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem 0 !important;
+                border: none !important;
+                text-align: right !important;
+            }
+            .responsive-table td::before {
+                content: attr(data-label);
+                font-size: 10px;
+                font-weight: 700;
+                color: #94a3b8;
+                text-transform: uppercase;
+                text-align: left;
+            }
+            .responsive-table td:last-child {
+                border-top: 1px solid #f8fafb !important;
+                margin-top: 0.5rem;
+                padding-top: 0.75rem !important;
+            }
+        }
+
         .input-elegant {
             background: var(--secondary);
             border: 2px solid transparent;
@@ -62,6 +98,7 @@
             border-radius: 100px;
             font-size: 11px;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .count-badge {
@@ -159,7 +196,6 @@
 
             <!-- ユーザー画面 -->
             <section id="user-view" class="hidden space-y-8">
-                <!-- お気に入りルートセクション -->
                 <div class="space-y-3">
                     <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-2">よく使うルート</h3>
                     <div id="favorites-container" class="flex flex-wrap gap-2 px-2"></div>
@@ -220,12 +256,12 @@
                 </div>
 
                 <div class="soft-card overflow-hidden">
-                    <div class="px-8 py-4 bg-slate-50/50 border-b border-slate-50 flex justify-between items-center">
+                    <div class="px-4 md:px-8 py-4 bg-slate-50/50 border-b border-slate-50 flex justify-between items-center">
                         <h2 class="text-sm font-bold text-slate-600">申請履歴</h2>
-                        <span class="text-[10px] text-slate-400 font-medium">※受理前のみ取り消し可能です</span>
+                        <span class="text-[9px] md:text-[10px] text-slate-400 font-medium">※受理前のみ取り消し可能</span>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
+                    <div class="p-4 md:p-0">
+                        <table class="w-full text-left responsive-table">
                             <thead class="text-[10px] font-bold text-slate-400 uppercase bg-slate-50/30">
                                 <tr>
                                     <th class="px-8 py-4">管理番号</th>
@@ -260,14 +296,14 @@
                         <h2 class="text-lg font-bold text-slate-700">精算管理パネル</h2>
                         <button onclick="exportToCSV()" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-4 py-2 rounded-lg">CSV出力</button>
                     </div>
-                    <div class="p-6">
+                    <div class="p-4 md:p-8">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                             <input type="date" id="filter-start" oninput="renderAdminList()" class="px-4 py-2 text-sm input-elegant">
                             <input type="date" id="filter-end" oninput="renderAdminList()" class="px-4 py-2 text-sm input-elegant">
                             <input type="text" id="filter-keyword" oninput="renderAdminList()" placeholder="件名で検索..." class="px-4 py-2 text-sm input-elegant">
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-sm">
+                            <table class="w-full text-sm responsive-table">
                                 <thead class="text-[10px] font-bold text-slate-400 uppercase border-b">
                                     <tr>
                                         <th class="px-4 py-4 text-left">管理番号</th>
@@ -288,8 +324,8 @@
                 <!-- ユーザー管理パネル -->
                 <div id="admin-users-panel" class="hidden soft-card overflow-hidden">
                     <div class="p-8 border-b border-slate-50"><h2 class="text-lg font-bold text-slate-700">ユーザー管理</h2></div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
+                    <div class="p-4 md:p-0">
+                        <table class="w-full text-sm responsive-table">
                             <thead class="text-[10px] font-bold text-slate-400 uppercase bg-slate-50/50">
                                 <tr>
                                     <th class="px-8 py-4">氏名</th>
@@ -306,7 +342,7 @@
         </div>
     </div>
 
-    <!-- モーダル -->
+    <!-- モーダル、トースト等は共通 -->
     <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden fade-in">
             <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50">
@@ -333,7 +369,7 @@
         function generateManagementId() {
             const now = new Date();
             let year = now.getFullYear();
-            if (now.getMonth() < 3) year -= 1; // 年度考慮
+            if (now.getMonth() < 3) year -= 1;
             const yearStr = String(year).slice(-2);
             const sameYearPrefix = `${yearStr}-`;
             const countInYear = requests.filter(r => r.mgmtId && r.mgmtId.startsWith(sameYearPrefix)).length;
@@ -413,17 +449,10 @@
             }
         }
 
-        // --- 取り消し（キャンセル）機能 ---
         function cancelRequest(id) {
-            if (!confirm('この申請を取り消しますか？\n(取り消すとリストから削除されます)')) return;
-            
+            if (!confirm('この申請を取り消しますか？')) return;
             const index = requests.findIndex(r => r.id === id);
-            if (index !== -1) {
-                // セキュリティ: 申請中以外のステータスは削除不可にする念押し
-                if (requests[index].status !== '申請中') {
-                    return showToast('受理済みの申請は取り消せません', 'error');
-                }
-                
+            if (index !== -1 && requests[index].status === '申請中') {
                 requests.splice(index, 1);
                 localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
                 renderUserList();
@@ -434,39 +463,83 @@
         function renderUserList() {
             const list = document.getElementById('user-request-list');
             const userReqs = requests.filter(r => r.userId === currentUser.id);
-            
             if (userReqs.length === 0) {
                 list.innerHTML = '<tr><td colspan="6" class="px-8 py-10 text-center text-slate-300 text-xs italic">申請データがありません</td></tr>';
                 return;
             }
-
             list.innerHTML = userReqs.map(r => `
                 <tr class="hover:bg-slate-50 transition-all">
-                    <td class="px-8 py-5 text-[10px] font-bold text-indigo-500">#${r.mgmtId || '---'}</td>
-                    <td class="px-8 py-5 text-xs text-slate-500 font-medium">${r.date}</td>
-                    <td class="px-8 py-5 text-sm font-bold text-slate-700">${r.subject}</td>
-                    <td class="px-8 py-5 text-right text-sm font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</td>
-                    <td class="px-8 py-5 text-center">
+                    <td data-label="ID" class="px-8 py-5 text-[10px] font-bold text-indigo-500">#${r.mgmtId || '---'}</td>
+                    <td data-label="日付" class="px-8 py-5 text-xs text-slate-500 font-medium">${r.date}</td>
+                    <td data-label="件名" class="px-8 py-5 text-sm font-bold text-slate-700">${r.subject}</td>
+                    <td data-label="金額" class="px-8 py-5 text-right text-sm font-bold text-indigo-600 whitespace-nowrap">¥ ${r.totalPrice.toLocaleString()}</td>
+                    <td data-label="状態" class="px-8 py-5 text-center">
                         <span class="status-badge ${r.status === '受理' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}">${r.status}</span>
                     </td>
-                    <td class="px-8 py-5 text-right">
-                        ${r.status === '申請中' ? `
-                            <button onclick="cancelRequest(${r.id})" class="text-[10px] font-bold text-rose-400 hover:text-rose-600 transition-colors">取り消す</button>
-                        ` : '-'}
+                    <td data-label="操作" class="px-8 py-5 text-right">
+                        ${r.status === '申請中' ? `<button onclick="cancelRequest(${r.id})" class="text-[10px] font-bold text-rose-400 hover:text-rose-600">取り消す</button>` : '-'}
                     </td>
                 </tr>
             `).join('');
         }
-        // ------------------------------
 
+        function renderAdminList() {
+            const list = document.getElementById('admin-request-list');
+            const keyword = document.getElementById('filter-keyword').value.toLowerCase();
+            const start = document.getElementById('filter-start').value;
+            const end = document.getElementById('filter-end').value;
+            const filtered = requests.filter(r => {
+                const matchesDate = (!start || r.date >= start) && (!end || r.date <= end);
+                const matchesText = !keyword || r.subject.toLowerCase().includes(keyword);
+                return matchesDate && matchesText;
+            });
+            list.innerHTML = filtered.map(r => `
+                <tr class="hover:bg-slate-50/50">
+                    <td data-label="ID" class="px-4 py-5">
+                        <button onclick="openDetail(${r.id})" class="text-[11px] font-bold text-indigo-600 hover:underline">#${r.mgmtId || '---'}</button>
+                    </td>
+                    <td data-label="申請者" class="px-4 py-5 font-bold text-slate-700">${r.userName}</td>
+                    <td data-label="日付" class="px-4 py-5 text-xs text-slate-500">${r.date}</td>
+                    <td data-label="件名" class="px-4 py-5 text-xs text-slate-600 truncate max-w-[120px]">${r.subject}</td>
+                    <td data-label="金額" class="px-4 py-5 text-right font-bold text-indigo-600 whitespace-nowrap">¥ ${r.totalPrice.toLocaleString()}</td>
+                    <td data-label="状態" class="px-4 py-5 text-center">
+                        <span class="status-badge ${r.status === '受理' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}">${r.status}</span>
+                    </td>
+                    <td data-label="操作" class="px-4 py-5 text-right">
+                        ${r.status === '申請中' ? `<button onclick="approveRequest(${r.id})" class="text-[11px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-lg">承認</button>` : '-'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderUserManagement() {
+            const list = document.getElementById('admin-user-list');
+            list.innerHTML = users.map(u => `
+                <tr>
+                    <td data-label="氏名" class="px-8 py-5 font-bold text-slate-700">${u.name}</td>
+                    <td data-label="Email" class="px-8 py-5 text-slate-400 text-xs">${u.email}</td>
+                    <td data-label="状態" class="px-8 py-5">
+                        <span class="status-badge ${u.status === '承認済み' ? 'bg-emerald-50 text-emerald-500' : u.status === '却下' ? 'bg-rose-50 text-rose-500' : 'bg-amber-50 text-amber-500'}">${u.status}</span>
+                    </td>
+                    <td data-label="操作" class="px-8 py-5 text-right space-x-2">
+                        ${u.status === '承認待ち' ? `
+                            <button onclick="setUserStatus('${u.email}', '承認済み')" class="text-xs font-bold text-emerald-600">承認</button>
+                            <span class="text-slate-200">|</span>
+                            <button onclick="setUserStatus('${u.email}', '却下')" class="text-xs font-bold text-rose-400">却下</button>
+                        ` : `<button onclick="deleteUser('${u.email}')" class="text-xs font-bold text-slate-400 hover:text-rose-500">削除</button>`}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // お気に入り・補助機能
         function saveAsFavorite() {
             const from = document.getElementById('from-station').value;
             const to = document.getElementById('to-station').value;
             const unit = document.getElementById('unit-price').value;
             const round = document.getElementById('round-trip').checked;
-            if (!from || !to || !unit) return showToast('ルートと単価を入力してください', 'error');
+            if (!from || !to || !unit) return showToast('入力を完了してください', 'error');
             if (!userFavorites[currentUser.id]) userFavorites[currentUser.id] = [];
-            if (userFavorites[currentUser.id].some(f => f.from === from && f.to === to)) return showToast('既に登録済みです', 'error');
             userFavorites[currentUser.id].push({ from, to, unit, round });
             localStorage.setItem('user_favorites_v4', JSON.stringify(userFavorites));
             renderFavorites();
@@ -476,40 +549,28 @@
         function renderFavorites() {
             const container = document.getElementById('favorites-container');
             const favs = userFavorites[currentUser.id] || [];
-            if (favs.length === 0) {
-                container.innerHTML = '<p class="text-[10px] text-slate-300 italic">保存されたルートはありません</p>';
-                return;
-            }
-            container.innerHTML = favs.map((f, index) => `
-                <div class="favorite-tag" onclick="applyFavorite(${index})">
+            container.innerHTML = favs.length ? favs.map((f, i) => `
+                <div class="favorite-tag" onclick="applyFavorite(${i})">
                     <span>${f.from} ⇄ ${f.to}</span>
-                    <button onclick="removeFavorite(event, ${index})" class="hover:text-rose-500 font-bold ml-1">&times;</button>
+                    <button onclick="removeFavorite(event, ${i})" class="ml-1 text-slate-300 hover:text-rose-500">&times;</button>
                 </div>
-            `).join('');
+            `).join('') : '<p class="text-[10px] text-slate-300 italic">保存されたルートはありません</p>';
         }
 
-        function applyFavorite(index) {
-            const fav = userFavorites[currentUser.id][index];
-            document.getElementById('from-station').value = fav.from;
-            document.getElementById('to-station').value = fav.to;
-            document.getElementById('unit-price').value = fav.unit;
-            document.getElementById('round-trip').checked = fav.round;
+        function applyFavorite(i) {
+            const f = userFavorites[currentUser.id][i];
+            document.getElementById('from-station').value = f.from;
+            document.getElementById('to-station').value = f.to;
+            document.getElementById('unit-price').value = f.unit;
+            document.getElementById('round-trip').checked = f.round;
             calculateAmount();
-            showToast('ルートを適用しました');
         }
 
-        function removeFavorite(event, index) {
-            event.stopPropagation();
-            userFavorites[currentUser.id].splice(index, 1);
+        function removeFavorite(e, i) {
+            e.stopPropagation();
+            userFavorites[currentUser.id].splice(i, 1);
             localStorage.setItem('user_favorites_v4', JSON.stringify(userFavorites));
             renderFavorites();
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            document.getElementById('auth-screen').classList.remove('hidden');
-            document.getElementById('main-content').classList.add('hidden');
-            updateIdDatalist();
         }
 
         function calculateAmount() {
@@ -517,6 +578,12 @@
             const total = document.getElementById('round-trip').checked ? price * 2 : price;
             document.getElementById('total-display').innerText = `¥ ${total.toLocaleString()}`;
             return total;
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('main-content').classList.add('hidden');
         }
 
         function autoFillBank() {
@@ -562,67 +629,18 @@
             showToast('申請を送信しました');
         };
 
-        function renderAdminList() {
-            const list = document.getElementById('admin-request-list');
-            const keyword = document.getElementById('filter-keyword').value.toLowerCase();
-            const start = document.getElementById('filter-start').value;
-            const end = document.getElementById('filter-end').value;
-            const filtered = requests.filter(r => {
-                const matchesDate = (!start || r.date >= start) && (!end || r.date <= end);
-                const matchesText = !keyword || r.subject.toLowerCase().includes(keyword);
-                return matchesDate && matchesText;
-            });
-            list.innerHTML = filtered.map(r => `
-                <tr class="hover:bg-slate-50/50">
-                    <td class="px-4 py-5">
-                        <button onclick="openDetail(${r.id})" class="text-[11px] font-bold text-indigo-600 hover:underline">#${r.mgmtId || '---'}</button>
-                    </td>
-                    <td class="px-4 py-5 font-bold text-slate-700">${r.userName}</td>
-                    <td class="px-4 py-5 text-xs text-slate-500">${r.date}</td>
-                    <td class="px-4 py-5 text-xs text-slate-600 truncate max-w-[120px]">${r.subject}</td>
-                    <td class="px-4 py-5 text-right font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</td>
-                    <td class="px-4 py-5 text-center">
-                        <span class="status-badge ${r.status === '受理' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}">${r.status}</span>
-                    </td>
-                    <td class="px-4 py-5 text-right">
-                        ${r.status === '申請中' ? `<button onclick="approveRequest(${r.id})" class="text-[11px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-lg">承認</button>` : '-'}
-                    </td>
-                </tr>
-            `).join('');
-        }
-
         function openDetail(id) {
             const r = requests.find(req => req.id === id);
             if (!r) return;
-            const content = document.getElementById('modal-content');
-            content.innerHTML = `
+            document.getElementById('modal-content').innerHTML = `
                 <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">申請情報</span>
-                        <span class="text-xs font-bold text-indigo-600">管理番号: #${r.mgmtId}</span>
+                    <p class="text-xs font-bold text-indigo-600">管理番号: #${r.mgmtId}</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-50 p-3 rounded-xl"><p class="text-[9px] text-slate-400 font-bold">申請者</p><p class="text-sm font-bold">${r.userName}</p></div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><p class="text-[9px] text-slate-400 font-bold">日付</p><p class="text-sm font-bold">${r.date}</p></div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 text-sm">
-                        <div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[10px] text-slate-400 font-bold mb-1">申請者</p><p class="font-bold">${r.userName}</p></div>
-                        <div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[10px] text-slate-400 font-bold mb-1">日付</p><p class="font-bold">${r.date}</p></div>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-2xl">
-                        <p class="text-[10px] text-slate-400 font-bold mb-1">件名 / 区間</p>
-                        <p class="font-bold">${r.subject}</p>
-                        <p class="text-xs text-slate-500 mt-1">${r.from} → ${r.to}${r.isRoundTrip ? ' (往復)' : ''}</p>
-                    </div>
-                    <div class="bg-indigo-50 p-4 rounded-2xl flex justify-between items-center">
-                        <p class="text-[10px] text-indigo-400 font-bold">合計金額</p>
-                        <p class="text-xl font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</p>
-                    </div>
-                    <div class="border-t pt-4">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">振込先詳細</span>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between"><span class="text-slate-400">銀行名</span><span>${r.bank.bankName}</span></div>
-                            <div class="flex justify-between"><span class="text-slate-400">支店名</span><span>${r.bank.branchName}</span></div>
-                            <div class="flex justify-between"><span class="text-slate-400">口座番号</span><span>${r.bank.accountNumber}</span></div>
-                            <div class="flex justify-between"><span class="text-slate-400">名義</span><span>${r.bank.accountHolder}</span></div>
-                        </div>
-                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl"><p class="text-[9px] text-slate-400 font-bold">目的・ルート</p><p class="text-sm font-bold">${r.subject}</p><p class="text-[10px] text-slate-500">${r.from} → ${r.to}</p></div>
+                    <div class="bg-indigo-50 p-3 rounded-xl flex justify-between"><span class="text-xs font-bold text-indigo-400">合計金額</span><span class="text-lg font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</span></div>
                 </div>
             `;
             document.getElementById('detail-modal').classList.remove('hidden');
@@ -632,63 +650,25 @@
 
         function approveRequest(id) {
             const req = requests.find(r => r.id === id);
-            if (req) {
-                req.status = '受理';
-                localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
-                renderAdminList();
-                updateBadges();
-                showToast('申請を承認しました');
-            }
+            if (req) { req.status = '受理'; localStorage.setItem('transport_requests_v4', JSON.stringify(requests)); renderAdminList(); updateBadges(); showToast('承認しました'); }
         }
 
         function updateBadges() {
-            const unapprovedUsers = users.filter(u => u.status === '承認待ち').length;
-            const userBadge = document.getElementById('unapproved-count-badge');
-            userBadge.innerText = unapprovedUsers;
-            userBadge.classList.toggle('hidden', unapprovedUsers === 0);
-            const unproccessedReqs = requests.filter(r => r.status === '申請中').length;
-            const reqBadge = document.getElementById('unprocessed-req-badge');
-            reqBadge.innerText = unproccessedReqs;
-            reqBadge.classList.toggle('hidden', unproccessedReqs === 0);
-        }
-
-        function renderUserManagement() {
-            const list = document.getElementById('admin-user-list');
-            list.innerHTML = users.map(u => `
-                <tr>
-                    <td class="px-8 py-5 font-bold text-slate-700">${u.name}</td>
-                    <td class="px-8 py-5 text-slate-400 text-xs">${u.email}</td>
-                    <td class="px-8 py-5">
-                        <span class="status-badge ${u.status === '承認済み' ? 'bg-emerald-50 text-emerald-500' : u.status === '却下' ? 'bg-rose-50 text-rose-500' : 'bg-amber-50 text-amber-500'}">${u.status}</span>
-                    </td>
-                    <td class="px-8 py-5 text-right space-x-2">
-                        ${u.status === '承認待ち' ? `
-                            <button onclick="setUserStatus('${u.email}', '承認済み')" class="text-xs font-bold text-emerald-600">承認</button>
-                            <span class="text-slate-200">|</span>
-                            <button onclick="setUserStatus('${u.email}', '却下')" class="text-xs font-bold text-rose-400">却下</button>
-                        ` : `<button onclick="deleteUser('${u.email}')" class="text-xs font-bold text-slate-400 hover:text-rose-500">削除</button>`}
-                    </td>
-                </tr>
-            `).join('');
+            const uCount = users.filter(u => u.status === '承認待ち').length;
+            document.getElementById('unapproved-count-badge').innerText = uCount;
+            document.getElementById('unapproved-count-badge').classList.toggle('hidden', uCount === 0);
+            const rCount = requests.filter(r => r.status === '申請中').length;
+            document.getElementById('unprocessed-req-badge').innerText = rCount;
+            document.getElementById('unprocessed-req-badge').classList.toggle('hidden', rCount === 0);
         }
 
         function setUserStatus(email, status) {
             const uIdx = users.findIndex(u => u.email === email);
-            if (uIdx !== -1) {
-                users[uIdx].status = status;
-                saveUsers();
-                renderUserManagement();
-                updateBadges();
-            }
+            if (uIdx !== -1) { users[uIdx].status = status; saveUsers(); renderUserManagement(); updateBadges(); }
         }
 
         function deleteUser(email) {
-            if (confirm(`ユーザー ${email} を削除しますか？`)) {
-                users = users.filter(u => u.email !== email);
-                saveUsers();
-                renderUserManagement();
-                updateIdDatalist();
-            }
+            if (confirm('削除しますか？')) { users = users.filter(u => u.email !== email); saveUsers(); renderUserManagement(); updateIdDatalist(); }
         }
 
         function saveUsers() { localStorage.setItem('transport_users_v4', JSON.stringify(users)); }
@@ -698,7 +678,7 @@
             toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl shadow-xl z-50 text-sm font-bold border ${type === 'success' ? 'bg-white text-indigo-600 border-indigo-100' : 'bg-rose-50 text-rose-600 border-rose-100'} fade-in`;
             toast.innerText = msg;
             document.body.appendChild(toast);
-            setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
 
         function switchAdminTab(type) {
@@ -710,21 +690,12 @@
         }
 
         function exportToCSV() {
-            if (requests.length === 0) return;
-            const headers = ['管理番号', '日付', '氏名', '件名', '金額', 'ステータス'];
-            const rows = requests.map(r => [r.mgmtId, r.date, r.userName, `"${r.subject}"`, r.totalPrice, r.status]);
-            const csv = [headers, ...rows].map(e => e.join(",")).join("\n");
-            const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `transport_expenses.csv`;
-            link.click();
+            const csv = [["ID","日付","氏名","件名","金額","状態"], ...requests.map(r => [r.mgmtId, r.date, r.userName, `"${r.subject}"`, r.totalPrice, r.status])].map(e => e.join(",")).join("\n");
+            const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv' });
+            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `expenses.csv`; a.click();
         }
 
-        window.onload = function() {
-            document.getElementById('date').valueAsDate = new Date();
-            updateIdDatalist();
-        };
+        window.onload = function() { document.getElementById('date').valueAsDate = new Date(); updateIdDatalist(); };
     </script>
 </body>
 </html>
