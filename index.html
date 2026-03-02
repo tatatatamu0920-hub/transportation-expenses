@@ -342,16 +342,35 @@
         </div>
     </div>
 
-    <!-- モーダル、トースト等は共通 -->
+    <!-- モーダル（詳細用） -->
     <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden fade-in">
             <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-700">申請詳細</h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
+                <button onclick="closeModal('detail-modal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
             </div>
             <div id="modal-content" class="p-8 space-y-6 max-h-[70vh] overflow-y-auto"></div>
             <div class="px-8 py-6 border-t flex justify-end">
-                <button onclick="closeModal()" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">閉じる</button>
+                <button onclick="closeModal('detail-modal')" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 削除確認モーダル -->
+    <div id="delete-confirm-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 modal-overlay">
+        <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden fade-in">
+            <div class="p-8 text-center space-y-4">
+                <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">申請を削除しますか？</h3>
+                <p class="text-sm text-slate-400">この操作は取り消せません。管理番号 <span id="delete-mgmt-id" class="font-bold text-indigo-500"></span> の申請データを完全に削除します。</p>
+            </div>
+            <div class="grid grid-cols-2 border-t">
+                <button onclick="closeModal('delete-confirm-modal')" class="py-4 text-sm font-bold text-slate-400 hover:bg-slate-50 border-r">キャンセル</button>
+                <button id="confirm-delete-btn" class="py-4 text-sm font-bold text-rose-500 hover:bg-rose-50">削除する</button>
             </div>
         </div>
     </div>
@@ -365,6 +384,9 @@
         let users = JSON.parse(localStorage.getItem('transport_users_v4')) || [];
         let savedBankInfo = JSON.parse(localStorage.getItem('bank_info_v4')) || {};
         let userFavorites = JSON.parse(localStorage.getItem('user_favorites_v4')) || {};
+        
+        // 削除対象の保持用
+        let pendingDeleteId = null;
 
         function generateManagementId() {
             const now = new Date();
@@ -498,19 +520,43 @@
                     <td data-label="ID" class="px-4 py-5">
                         <button onclick="openDetail(${r.id})" class="text-[11px] font-bold text-indigo-600 hover:underline">#${r.mgmtId || '---'}</button>
                     </td>
-                    <td data-label="申請者" class="px-4 py-5 font-bold text-slate-700">${r.userName}</td>
+                    <td data-label="申請者" class="px-4 py-5 font-bold text-slate-700 text-xs md:text-sm">${r.userName}</td>
                     <td data-label="日付" class="px-4 py-5 text-xs text-slate-500">${r.date}</td>
                     <td data-label="件名" class="px-4 py-5 text-xs text-slate-600 truncate max-w-[120px]">${r.subject}</td>
                     <td data-label="金額" class="px-4 py-5 text-right font-bold text-indigo-600 whitespace-nowrap">¥ ${r.totalPrice.toLocaleString()}</td>
                     <td data-label="状態" class="px-4 py-5 text-center">
                         <span class="status-badge ${r.status === '受理' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}">${r.status}</span>
                     </td>
-                    <td data-label="操作" class="px-4 py-5 text-right">
-                        ${r.status === '申請中' ? `<button onclick="approveRequest(${r.id})" class="text-[11px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-lg">承認</button>` : '-'}
+                    <td data-label="操作" class="px-4 py-5 text-right flex flex-col md:flex-row items-end md:items-center justify-end gap-2">
+                        ${r.status === '申請中' ? `<button onclick="approveRequest(${r.id})" class="text-[11px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-lg whitespace-nowrap">承認</button>` : ''}
+                        <button onclick="openDeleteConfirm(${r.id})" class="text-[11px] font-bold text-rose-400 hover:text-rose-600 px-2 py-1.5 whitespace-nowrap">削除</button>
                     </td>
                 </tr>
             `).join('');
         }
+
+        // 申請削除（管理者用）
+        function openDeleteConfirm(id) {
+            const r = requests.find(req => req.id === id);
+            if (!r) return;
+            pendingDeleteId = id;
+            document.getElementById('delete-mgmt-id').innerText = `#${r.mgmtId || '---'}`;
+            document.getElementById('delete-confirm-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('confirm-delete-btn').onclick = function() {
+            if (pendingDeleteId) {
+                const index = requests.findIndex(r => r.id === pendingDeleteId);
+                if (index !== -1) {
+                    requests.splice(index, 1);
+                    localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
+                    renderAdminList();
+                    updateBadges();
+                    showToast('申請を削除しました');
+                }
+            }
+            closeModal('delete-confirm-modal');
+        };
 
         function renderUserManagement() {
             const list = document.getElementById('admin-user-list');
@@ -633,7 +679,7 @@
             const r = requests.find(req => req.id === id);
             if (!r) return;
             document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4">
+                <div class="space-y-4 text-left">
                     <p class="text-xs font-bold text-indigo-600">管理番号: #${r.mgmtId}</p>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-slate-50 p-3 rounded-xl"><p class="text-[9px] text-slate-400 font-bold">申請者</p><p class="text-sm font-bold">${r.userName}</p></div>
@@ -646,7 +692,10 @@
             document.getElementById('detail-modal').classList.remove('hidden');
         }
 
-        function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
+        function closeModal(id) { 
+            document.getElementById(id).classList.add('hidden'); 
+            if (id === 'delete-confirm-modal') pendingDeleteId = null;
+        }
 
         function approveRequest(id) {
             const req = requests.find(r => r.id === id);
@@ -668,14 +717,14 @@
         }
 
         function deleteUser(email) {
-            if (confirm('削除しますか？')) { users = users.filter(u => u.email !== email); saveUsers(); renderUserManagement(); updateIdDatalist(); }
+            if (confirm('ユーザーを削除しますか？関連する申請データは残ります。')) { users = users.filter(u => u.email !== email); saveUsers(); renderUserManagement(); updateIdDatalist(); }
         }
 
         function saveUsers() { localStorage.setItem('transport_users_v4', JSON.stringify(users)); }
 
         function showToast(msg, type = 'success') {
             const toast = document.createElement('div');
-            toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl shadow-xl z-50 text-sm font-bold border ${type === 'success' ? 'bg-white text-indigo-600 border-indigo-100' : 'bg-rose-50 text-rose-600 border-rose-100'} fade-in`;
+            toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl shadow-xl z-[100] text-sm font-bold border ${type === 'success' ? 'bg-white text-indigo-600 border-indigo-100' : 'bg-rose-50 text-rose-600 border-rose-100'} fade-in`;
             toast.innerText = msg;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
