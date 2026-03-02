@@ -3,176 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>交通費申請システム</title>
+    <title>交通費申請システム - Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
         body {
             font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
         }
         .glass-morphism {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        input:focus, select:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+            outline: none;
+        }
+        .tab-active {
+            border-bottom: 2px solid #4f46e5;
+            color: #4f46e5;
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-800">
+<body class="min-h-screen text-slate-800 pb-12">
 
-    <div id="app" class="max-w-4xl mx-auto py-8 px-4">
-        <!-- ログイン画面 -->
-        <div id="login-screen" class="max-w-md mx-auto mt-20 p-8 glass-morphism rounded-2xl shadow-xl">
-            <h1 class="text-2xl font-bold text-center mb-6 text-indigo-700">交通費申請システム</h1>
-            <div class="space-y-4">
+    <div id="app" class="max-w-5xl mx-auto py-6 px-4">
+        <!-- 認証画面（ログイン/新規登録） -->
+        <div id="auth-screen" class="max-w-md mx-auto mt-10 p-8 glass-morphism rounded-2xl shadow-2xl border border-white">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-900">交通費申請 Pro</h1>
+            </div>
+
+            <!-- タブ切替 -->
+            <div class="flex border-b border-slate-200 mb-6">
+                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 py-2 text-sm font-bold tab-active">ログイン</button>
+                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 py-2 text-sm font-bold text-slate-500">新規登録</button>
+            </div>
+
+            <!-- ログインフォーム -->
+            <div id="login-form" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium mb-1">ユーザーID</label>
-                    <input type="text" id="login-id" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="admin or user">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">メールアドレス / ID</label>
+                    <input type="text" id="login-id" class="w-full px-4 py-2 border border-slate-200 rounded-lg transition-all" placeholder="example@mail.com">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">パスワード</label>
-                    <input type="password" id="login-pw" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="admin or user">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">パスワード</label>
+                    <input type="password" id="login-pw" class="w-full px-4 py-2 border border-slate-200 rounded-lg transition-all" placeholder="••••••••">
                 </div>
-                <button onclick="handleLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-lg transition-colors">ログイン</button>
-                <p class="text-xs text-slate-500 text-center mt-4">テスト用：admin/admin または user/user</p>
+                <button onclick="handleLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all shadow-lg active:transform active:scale-95">ログイン</button>
+            </div>
+
+            <!-- 新規登録フォーム -->
+            <div id="register-form" class="hidden space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">氏名</label>
+                    <input type="text" id="reg-name" class="w-full px-4 py-2 border border-slate-200 rounded-lg transition-all" placeholder="山田 太郎">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">メールアドレス</label>
+                    <input type="email" id="reg-id" class="w-full px-4 py-2 border border-slate-200 rounded-lg transition-all" placeholder="user@example.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">パスワード</label>
+                    <input type="password" id="reg-pw" class="w-full px-4 py-2 border border-slate-200 rounded-lg transition-all" placeholder="••••••••">
+                </div>
+                <p class="text-[10px] text-slate-500 italic">※登録後、管理者の承認が必要となります。</p>
+                <button onclick="handleRegister()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition-all shadow-lg active:transform active:scale-95">利用申請を送る</button>
             </div>
         </div>
 
-        <!-- メインコンテンツ（ログイン後） -->
+        <!-- メインコンテンツ -->
         <div id="main-content" class="hidden">
-            <header class="flex justify-between items-center mb-8">
-                <div>
-                    <h1 class="text-2xl font-bold text-slate-900" id="welcome-msg">こんにちは</h1>
-                    <p class="text-slate-500" id="role-badge"></p>
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-indigo-600 p-2 rounded-lg text-white shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900" id="welcome-msg">こんにちは</h1>
+                        <span id="role-badge" class="inline-block px-2 py-0.5 bg-slate-200 text-slate-700 rounded text-[10px] font-bold uppercase mt-1 tracking-tight"></span>
+                    </div>
                 </div>
-                <button onclick="handleLogout()" class="text-slate-500 hover:text-red-500 text-sm font-medium">ログアウト</button>
+                <button onclick="handleLogout()" class="px-4 py-2 text-slate-600 hover:bg-white hover:text-red-500 rounded-lg text-sm font-bold transition-all border border-transparent hover:border-red-100 shadow-sm">
+                    ログアウト
+                </button>
             </header>
 
             <!-- ユーザー用：申請フォーム -->
             <section id="user-view" class="hidden space-y-6">
-                <div class="p-6 glass-morphism rounded-xl shadow-md">
-                    <h2 class="text-lg font-bold mb-4 flex items-center">
-                        <span class="w-2 h-6 bg-indigo-500 rounded mr-2"></span>
-                        新規交通費申請
-                    </h2>
-                    <form id="expense-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="col-span-1">
-                            <label class="block text-sm font-medium mb-1">日付</label>
-                            <input type="date" id="date" required class="w-full px-3 py-2 border rounded-lg">
-                        </div>
-                        <div class="col-span-1">
-                            <label class="block text-sm font-medium mb-1">件名 (例: A社定期訪問)</label>
-                            <input type="text" id="subject" required class="w-full px-3 py-2 border rounded-lg">
+                <!-- 既存の申請フォームと同じ内容のため省略せず保持 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                        <h2 class="font-bold flex items-center text-slate-700">新規申請フォーム</h2>
+                    </div>
+                    <form id="expense-form" class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">利用日</label>
+                                <input type="date" id="date" required class="w-full px-3 py-2 border border-slate-200 rounded-lg">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 mb-1">件名 / 目的</label>
+                                <input type="text" id="subject" required class="w-full px-3 py-2 border border-slate-200 rounded-lg" placeholder="例: ○○株式会社 定期訪問">
+                            </div>
                         </div>
                         
-                        <div class="col-span-2 border-t pt-4 mt-2">
-                            <h3 class="text-sm font-bold text-slate-600 mb-2">振込先情報 (保存されます)</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input type="text" id="bank-info" placeholder="銀行名・支店名" required class="px-3 py-2 border rounded-lg">
-                                <input type="text" id="account-info" placeholder="口座番号・名義" required class="px-3 py-2 border rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
+                            <div class="md:col-span-2 flex justify-between">
+                                <h3 class="text-xs font-bold text-indigo-700 uppercase tracking-wider">振込先情報 (保存されます)</h3>
+                            </div>
+                            <div>
+                                <input type="text" id="bank-info" placeholder="銀行名・支店名" required class="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white">
+                            </div>
+                            <div>
+                                <input type="text" id="account-info" placeholder="口座種別・番号・名義" required class="w-full px-3 py-2 border border-slate-200 rounded-lg bg-white">
                             </div>
                         </div>
 
-                        <div class="col-span-2 border-t pt-4 mt-2">
-                            <div class="flex items-center space-x-4 mb-4">
-                                <label class="inline-flex items-center">
-                                    <input type="radio" name="transport" value="電車" checked class="form-radio text-indigo-600">
-                                    <span class="ml-2">電車</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input type="radio" name="transport" value="バス" class="form-radio text-indigo-600">
-                                    <span class="ml-2">バス</span>
-                                </label>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-xs font-bold text-indigo-600 mb-1">【往路】</p>
-                                    <input type="text" id="from-station" placeholder="乗車点" required class="w-full px-3 py-2 border rounded-lg mb-2">
-                                    <input type="text" id="to-station" placeholder="目的地" required class="w-full px-3 py-2 border rounded-lg">
-                                </div>
-                                <div>
-                                    <div class="flex justify-between items-center mb-1">
-                                        <p class="text-xs font-bold text-indigo-600">【復路】</p>
-                                        <label class="inline-flex items-center text-xs text-slate-500 cursor-pointer">
-                                            <input type="checkbox" id="round-trip" onchange="toggleReturnTrip()" class="form-checkbox">
-                                            <span class="ml-1 font-bold">往復（往路と同じ）</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">交通手段・区間</h3>
+                                    <div class="flex gap-2">
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="transport" value="電車" checked class="sr-only peer">
+                                            <span class="px-3 py-1 text-xs border border-slate-200 rounded-full peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600 transition-all">電車</span>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="transport" value="バス" class="sr-only peer">
+                                            <span class="px-3 py-1 text-xs border border-slate-200 rounded-full peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600 transition-all">バス</span>
                                         </label>
                                     </div>
-                                    <div id="return-inputs">
-                                        <input type="text" id="return-from" placeholder="乗車点" class="w-full px-3 py-2 border rounded-lg mb-2">
-                                        <input type="text" id="return-to" placeholder="目的地" class="w-full px-3 py-2 border rounded-lg">
-                                    </div>
-                                    <div id="return-placeholder" class="hidden h-20 flex items-center justify-center border-2 border-dashed rounded-lg text-slate-400 text-sm">
-                                        往復のため入力を省略
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
+                                    <input type="text" id="from-station" placeholder="出発地" required class="w-full px-3 py-2 text-sm border-b border-slate-200 bg-transparent">
+                                    <input type="text" id="to-station" placeholder="目的地" required class="w-full px-3 py-2 text-sm border-b border-slate-200 bg-transparent">
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">金額設定</h3>
+                                <div class="bg-indigo-900 text-white p-6 rounded-xl shadow-inner relative overflow-hidden">
+                                    <div class="relative z-10">
+                                        <label class="block text-[10px] text-indigo-300 font-bold mb-1">片道運賃 (税込)</label>
+                                        <div class="flex items-center">
+                                            <span class="text-2xl font-bold mr-2">¥</span>
+                                            <input type="number" id="unit-price" placeholder="0" required oninput="calculateAmount()" class="w-full bg-transparent text-3xl font-bold border-none p-0 focus:ring-0">
+                                        </div>
+                                        <div class="mt-4 flex justify-between items-center">
+                                            <label class="inline-flex items-center text-xs text-indigo-200 cursor-pointer">
+                                                <input type="checkbox" id="round-trip" onchange="calculateAmount()" class="mr-2"> 往復
+                                            </label>
+                                            <span class="text-xl font-bold text-indigo-100" id="total-display">¥ 0</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-span-2 mt-4">
-                            <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition shadow-lg">申請する</button>
-                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition shadow-lg">申請を送信</button>
                     </form>
                 </div>
 
-                <div class="p-6 glass-morphism rounded-xl shadow-md">
-                    <h2 class="text-lg font-bold mb-4">自分の申請一覧</h2>
+                <!-- 申請履歴 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-200">
+                        <h2 class="font-bold text-slate-700">申請履歴</h2>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
-                            <thead>
-                                <tr class="border-b text-slate-500 text-sm">
-                                    <th class="py-2">日付</th>
-                                    <th class="py-2">件名</th>
-                                    <th class="py-2">区間</th>
-                                    <th class="py-2">ステータス</th>
+                            <thead class="bg-slate-50 text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-3">日付</th>
+                                    <th class="px-6 py-3">件名 / 区間</th>
+                                    <th class="px-6 py-3">金額</th>
+                                    <th class="px-6 py-3">ステータス</th>
                                 </tr>
                             </thead>
-                            <tbody id="user-request-list">
-                                <!-- JSで挿入 -->
-                            </tbody>
+                            <tbody id="user-request-list"></tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- 管理者用：申請一覧 -->
+            <!-- 管理者用：タブ切替 -->
             <section id="admin-view" class="hidden space-y-6">
-                <div class="p-6 glass-morphism rounded-xl shadow-md">
-                    <h2 class="text-lg font-bold mb-4">管理者用：承認待ち一覧</h2>
-                    
-                    <!-- フィルタ -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-slate-50 rounded-lg">
-                        <div>
-                            <label class="block text-xs font-bold mb-1">期間（開始）</label>
-                            <input type="date" id="filter-start" oninput="renderAdminList()" class="w-full px-3 py-1 text-sm border rounded">
+                <div class="flex gap-4 mb-2">
+                    <button onclick="switchAdminTab('requests')" id="admin-tab-req" class="px-4 py-2 font-bold text-sm tab-active">申請一覧</button>
+                    <button onclick="switchAdminTab('users')" id="admin-tab-users" class="px-4 py-2 font-bold text-sm text-slate-500">ユーザー管理</button>
+                </div>
+
+                <!-- 申請承認パネル -->
+                <div id="admin-requests-panel" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+                        <h2 class="font-bold text-slate-700">申請承認・管理パネル</h2>
+                        <button onclick="exportToCSV()" class="text-xs bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded-lg font-bold">CSV出力</button>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                            <input type="date" id="filter-start" oninput="renderAdminList()" class="px-3 py-1.5 text-sm border rounded-lg">
+                            <input type="date" id="filter-end" oninput="renderAdminList()" class="px-3 py-1.5 text-sm border rounded-lg">
+                            <input type="text" id="filter-keyword" oninput="renderAdminList()" placeholder="氏名・件名検索" class="px-3 py-1.5 text-sm border rounded-lg">
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold mb-1">期間（終了）</label>
-                            <input type="date" id="filter-end" oninput="renderAdminList()" class="w-full px-3 py-1 text-sm border rounded">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold mb-1">件名フィルタ</label>
-                            <input type="text" id="filter-subject" oninput="renderAdminList()" placeholder="キーワード検索" class="w-full px-3 py-1 text-sm border rounded">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-slate-50 text-slate-500 text-[10px] font-bold uppercase">
+                                    <tr>
+                                        <th class="px-4 py-3">申請者</th>
+                                        <th class="px-4 py-3">日付</th>
+                                        <th class="px-4 py-3">件名</th>
+                                        <th class="px-4 py-3">金額</th>
+                                        <th class="px-4 py-3">状態</th>
+                                        <th class="px-4 py-3 text-right">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-request-list" class="divide-y divide-slate-100"></tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead>
-                                <tr class="border-b text-slate-500 text-sm">
-                                    <th class="py-2">申請者</th>
-                                    <th class="py-2">日付 (修正可)</th>
-                                    <th class="py-2">件名 (修正可)</th>
-                                    <th class="py-2">区間</th>
-                                    <th class="py-2">振込先</th>
-                                    <th class="py-2">アクション</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-request-list" class="text-sm">
-                                <!-- JSで挿入 -->
-                            </tbody>
-                        </table>
+                <!-- ユーザー管理パネル -->
+                <div id="admin-users-panel" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-200 bg-slate-50">
+                        <h2 class="font-bold text-slate-700">登録ユーザー管理</h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-slate-50 text-slate-500 text-[10px] font-bold uppercase">
+                                    <tr>
+                                        <th class="px-4 py-3">氏名</th>
+                                        <th class="px-4 py-3">メールアドレス</th>
+                                        <th class="px-4 py-3">状態</th>
+                                        <th class="px-4 py-3 text-right">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-user-list" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -180,45 +256,86 @@
     </div>
 
     <script>
-        // --- 状態管理 ---
+        // --- 定数・初期設定 ---
+        const ADMIN_ID = "tatatatamu0920@gmail.com";
+        const ADMIN_PW = "Tamutamu0920";
+
         let currentUser = null;
-        let requests = [];
-        // 振込先情報の簡易永続化（リロードすると消えますが、セッション中は維持）
-        let savedBankInfo = {
-            bank: '',
-            account: ''
-        };
+        let requests = JSON.parse(localStorage.getItem('transport_requests')) || [];
+        let users = JSON.parse(localStorage.getItem('transport_users')) || [];
+        let savedBankInfo = JSON.parse(localStorage.getItem('bank_info')) || { bank: '', account: '' };
 
-        // ダミーデータ
-        const INITIAL_DATA = [
-            { id: 1, userId: 'user', userName: '一般ユーザー', date: '2023-10-01', subject: 'A社商談', transport: '電車', from: '新宿', to: '渋谷', isRoundTrip: true, bank: 'みずほ銀行', account: '1234567', status: '受理' },
-            { id: 2, userId: 'user', userName: '一般ユーザー', date: '2023-10-05', subject: '備品買い出し', transport: 'バス', from: '中野', to: '高円寺', isRoundTrip: false, returnFrom: '高円寺', returnTo: '中野', bank: 'みずほ銀行', account: '1234567', status: '申請中' }
-        ];
-        requests = [...INITIAL_DATA];
+        // --- 認証機能 ---
+        function switchAuthTab(type) {
+            const isLogin = type === 'login';
+            document.getElementById('login-form').classList.toggle('hidden', !isLogin);
+            document.getElementById('register-form').classList.toggle('hidden', isLogin);
+            document.getElementById('tab-login').classList.toggle('tab-active', isLogin);
+            document.getElementById('tab-login').classList.toggle('text-slate-500', !isLogin);
+            document.getElementById('tab-register').classList.toggle('tab-active', !isLogin);
+            document.getElementById('tab-register').classList.toggle('text-slate-500', isLogin);
+        }
 
-        // --- ログイン処理 ---
+        function handleRegister() {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-id').value;
+            const pw = document.getElementById('reg-pw').value;
+
+            if (!name || !email || !pw) return showToast('全項目入力してください', 'error');
+            if (users.some(u => u.email === email) || email === ADMIN_ID) return showToast('既に登録されているメールアドレスです', 'error');
+
+            const newUser = {
+                name,
+                email,
+                password: pw,
+                status: '承認待ち', // 初期状態は要承認
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('transport_users', JSON.stringify(users));
+            showToast('利用申請を送信しました。管理者の承認をお待ちください。', 'success');
+            switchAuthTab('login');
+        }
+
         function handleLogin() {
             const id = document.getElementById('login-id').value;
             const pw = document.getElementById('login-pw').value;
 
-            if (id === 'admin' && pw === 'admin') {
-                currentUser = { id: 'admin', name: '管理者', role: 'admin' };
-            } else if (id === 'user' && pw === 'user') {
-                currentUser = { id: 'user', name: '一般ユーザー', role: 'user' };
-            } else {
-                showMessage('IDまたはパスワードが違います');
+            // 管理者ログイン
+            if (id === ADMIN_ID && pw === ADMIN_PW) {
+                currentUser = { id: ADMIN_ID, name: '管理者', role: 'admin' };
+                initApp();
                 return;
             }
 
-            document.getElementById('login-screen').classList.add('hidden');
+            // 一般ユーザーログイン
+            const user = users.find(u => u.email === id && u.password === pw);
+            if (user) {
+                if (user.status === '承認待ち') {
+                    showToast('管理者の承認が完了していません', 'error');
+                } else if (user.status === '拒否') {
+                    showToast('利用権限がありません', 'error');
+                } else {
+                    currentUser = { id: user.email, name: user.name, role: 'user' };
+                    initApp();
+                }
+            } else {
+                showToast('IDまたはパスワードが正しくありません', 'error');
+            }
+        }
+
+        function initApp() {
+            document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-content').classList.remove('hidden');
             document.getElementById('welcome-msg').innerText = `こんにちは、${currentUser.name}さん`;
-            document.getElementById('role-badge').innerText = currentUser.role === 'admin' ? '管理者権限' : '一般ユーザー';
+            document.getElementById('role-badge').innerText = currentUser.role === 'admin' ? 'Administrator' : 'Employee';
             
             if (currentUser.role === 'admin') {
                 document.getElementById('admin-view').classList.remove('hidden');
                 document.getElementById('user-view').classList.add('hidden');
                 renderAdminList();
+                renderUserManagement();
             } else {
                 document.getElementById('user-view').classList.remove('hidden');
                 document.getElementById('admin-view').classList.add('hidden');
@@ -229,28 +346,72 @@
 
         function handleLogout() {
             currentUser = null;
-            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
             document.getElementById('main-content').classList.add('hidden');
             document.getElementById('expense-form').reset();
+            calculateAmount();
         }
 
-        // --- フォーム制御 ---
-        function toggleReturnTrip() {
-            const isRoundTrip = document.getElementById('round-trip').checked;
-            const inputs = document.getElementById('return-inputs');
-            const placeholder = document.getElementById('return-placeholder');
-            
-            if (isRoundTrip) {
-                inputs.classList.add('hidden');
-                placeholder.classList.remove('hidden');
-                document.getElementById('return-from').required = false;
-                document.getElementById('return-to').required = false;
-            } else {
-                inputs.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-                document.getElementById('return-from').required = true;
-                document.getElementById('return-to').required = true;
+        // --- 管理者パネル制御 ---
+        function switchAdminTab(type) {
+            const isReq = type === 'requests';
+            document.getElementById('admin-requests-panel').classList.toggle('hidden', !isReq);
+            document.getElementById('admin-users-panel').classList.toggle('hidden', isReq);
+            document.getElementById('admin-tab-req').classList.toggle('tab-active', isReq);
+            document.getElementById('admin-tab-req').classList.toggle('text-slate-500', !isReq);
+            document.getElementById('admin-tab-users').classList.toggle('tab-active', !isReq);
+            document.getElementById('admin-tab-users').classList.toggle('text-slate-500', isReq);
+        }
+
+        // --- ユーザー管理 (管理者用) ---
+        function renderUserManagement() {
+            const list = document.getElementById('admin-user-list');
+            list.innerHTML = users.map(u => `
+                <tr>
+                    <td class="px-4 py-4 font-medium">${u.name}</td>
+                    <td class="px-4 py-4 text-slate-500">${u.email}</td>
+                    <td class="px-4 py-4">
+                        <span class="px-2 py-1 rounded text-xs font-bold ${
+                            u.status === '承認済み' ? 'bg-green-100 text-green-700' : 
+                            u.status === '拒否' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
+                        }">${u.status}</span>
+                    </td>
+                    <td class="px-4 py-4 text-right space-x-2">
+                        ${u.status === '承認待ち' ? `
+                            <button onclick="setUserStatus('${u.email}', '承認済み')" class="text-green-600 font-bold hover:underline">承認</button>
+                            <button onclick="setUserStatus('${u.email}', '拒否')" class="text-red-600 font-bold hover:underline">拒否</button>
+                        ` : `
+                            <button onclick="deleteUser('${u.email}')" class="text-slate-400 hover:text-red-500">削除</button>
+                        `}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function setUserStatus(email, status) {
+            const user = users.find(u => u.email === email);
+            if (user) {
+                user.status = status;
+                localStorage.setItem('transport_users', JSON.stringify(users));
+                renderUserManagement();
+                showToast(`${user.name}さんを${status}にしました`);
             }
+        }
+
+        function deleteUser(email) {
+            if (!confirm('このユーザーをシステムから削除しますか？')) return;
+            users = users.filter(u => u.email !== email);
+            localStorage.setItem('transport_users', JSON.stringify(users));
+            renderUserManagement();
+        }
+
+        // --- フォーム計算・制御 ---
+        function calculateAmount() {
+            const price = parseInt(document.getElementById('unit-price').value) || 0;
+            const isRound = document.getElementById('round-trip').checked;
+            const total = isRound ? price * 2 : price;
+            document.getElementById('total-display').innerText = `¥ ${total.toLocaleString()}`;
+            return total;
         }
 
         function autoFillBankInfo() {
@@ -263,10 +424,10 @@
         // --- 申請処理 ---
         document.getElementById('expense-form').onsubmit = function(e) {
             e.preventDefault();
-            
-            // 振込先情報を保存
-            savedBankInfo.bank = document.getElementById('bank-info').value;
-            savedBankInfo.account = document.getElementById('account-info').value;
+            const bank = document.getElementById('bank-info').value;
+            const account = document.getElementById('account-info').value;
+            savedBankInfo = { bank, account };
+            localStorage.setItem('bank_info', JSON.stringify(savedBankInfo));
 
             const newRequest = {
                 id: Date.now(),
@@ -274,41 +435,38 @@
                 userName: currentUser.name,
                 date: document.getElementById('date').value,
                 subject: document.getElementById('subject').value,
-                bank: savedBankInfo.bank,
-                account: savedBankInfo.account,
+                bank, account,
                 transport: document.querySelector('input[name="transport"]:checked').value,
                 from: document.getElementById('from-station').value,
                 to: document.getElementById('to-station').value,
                 isRoundTrip: document.getElementById('round-trip').checked,
-                returnFrom: document.getElementById('return-from').value,
-                returnTo: document.getElementById('return-to').value,
+                totalPrice: calculateAmount(),
                 status: '申請中'
             };
 
             requests.unshift(newRequest);
+            localStorage.setItem('transport_requests', JSON.stringify(requests));
             renderUserList();
             this.reset();
-            toggleReturnTrip();
+            calculateAmount();
             autoFillBankInfo();
-            showMessage('申請が完了しました');
+            showToast('申請を送信しました', 'success');
         };
 
-        // --- 描画処理 ---
+        // --- 申請リスト描画 ---
         function renderUserList() {
             const list = document.getElementById('user-request-list');
             const userRequests = requests.filter(r => r.userId === currentUser.id);
-            
             list.innerHTML = userRequests.map(r => `
-                <tr class="border-b hover:bg-white/50 transition">
-                    <td class="py-3">${r.date}</td>
-                    <td class="py-3 font-medium">${r.subject}</td>
-                    <td class="py-3 text-xs text-slate-600">
-                        ${r.from} ↔ ${r.to} (${r.transport}${r.isRoundTrip ? '/往復' : '/片道'})
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 text-sm">${r.date}</td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-bold">${r.subject}</div>
+                        <div class="text-[10px] text-slate-500">${r.from} ↔ ${r.to}</div>
                     </td>
-                    <td class="py-3">
-                        <span class="px-2 py-1 rounded-full text-xs font-bold ${r.status === '受理' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">
-                            ${r.status}
-                        </span>
+                    <td class="px-6 py-4 text-sm font-bold">¥ ${r.totalPrice.toLocaleString()}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.status === '受理' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">${r.status}</span>
                     </td>
                 </tr>
             `).join('');
@@ -316,48 +474,43 @@
 
         function renderAdminList() {
             const list = document.getElementById('admin-request-list');
+            const keyword = document.getElementById('filter-keyword').value.toLowerCase();
             const start = document.getElementById('filter-start').value;
             const end = document.getElementById('filter-end').value;
-            const sub = document.getElementById('filter-subject').value.toLowerCase();
 
             const filtered = requests.filter(r => {
                 const matchesDate = (!start || r.date >= start) && (!end || r.date <= end);
-                const matchesSubject = !sub || r.subject.toLowerCase().includes(sub);
-                return matchesDate && matchesSubject;
+                const matchesText = !keyword || r.subject.toLowerCase().includes(keyword) || r.userName.toLowerCase().includes(keyword);
+                return matchesDate && matchesText;
             });
 
             list.innerHTML = filtered.map(r => `
-                <tr class="border-b bg-white">
-                    <td class="py-4 px-2 font-bold text-indigo-600">${r.userName}</td>
-                    <td class="py-4 px-2">
+                <tr class="hover:bg-slate-50">
+                    <td class="px-4 py-4 font-bold text-indigo-700">${r.userName}</td>
+                    <td class="px-4 py-4">
                         <input type="date" value="${r.date}" onchange="updateRequest(${r.id}, 'date', this.value)" class="border rounded px-1 text-xs">
                     </td>
-                    <td class="py-4 px-2">
+                    <td class="px-4 py-4">
                         <input type="text" value="${r.subject}" onchange="updateRequest(${r.id}, 'subject', this.value)" class="border rounded px-1 text-xs w-full">
                     </td>
-                    <td class="py-4 px-2 text-xs">
-                        ${r.transport}: ${r.from} → ${r.to}<br>
-                        ${r.isRoundTrip ? '(往復)' : '復路: ' + r.returnFrom + ' → ' + r.returnTo}
+                    <td class="px-4 py-4 font-bold">¥ ${r.totalPrice.toLocaleString()}</td>
+                    <td class="px-4 py-4">
+                        <span class="${r.status === '受理' ? 'text-green-600' : 'text-amber-600'} font-bold text-xs">${r.status}</span>
                     </td>
-                    <td class="py-4 px-2 text-[10px] text-slate-500">
-                        ${r.bank}<br>${r.account}
-                    </td>
-                    <td class="py-4 px-2">
-                        ${r.status === '申請中' 
-                            ? `<button onclick="approveRequest(${r.id})" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-bold transition">受理する</button>`
-                            : `<span class="text-green-600 font-bold">✓ 受理済み</span>`
-                        }
+                    <td class="px-4 py-4 text-right">
+                        ${r.status === '申請中' ? `<button onclick="approveRequest(${r.id})" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs font-bold">受理</button>` : '-'}
                     </td>
                 </tr>
             `).join('');
         }
 
-        // --- 管理者アクション ---
         function approveRequest(id) {
             const req = requests.find(r => r.id === id);
             if (req) {
                 req.status = '受理';
+                localStorage.setItem('transport_requests', JSON.stringify(requests));
                 renderAdminList();
+                showToast('申請を受理しました');
             }
         }
 
@@ -365,18 +518,31 @@
             const req = requests.find(r => r.id === id);
             if (req) {
                 req[field] = value;
-                console.log(`Updated ${field} for request ${id} to ${value}`);
+                localStorage.setItem('transport_requests', JSON.stringify(requests));
             }
         }
 
-        // --- ユーティリティ ---
-        function showMessage(msg) {
+        function exportToCSV() {
+            if (requests.length === 0) return;
+            const headers = ['日付', '氏名', '件名', '金額', 'ステータス'];
+            const rows = requests.map(r => [r.date, r.userName, `"${r.subject}"`, r.totalPrice, r.status]);
+            const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+            const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `expense_report_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+        }
+
+        function showToast(msg, type = 'success') {
             const toast = document.createElement('div');
-            toast.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl z-50 text-sm font-medium';
+            toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 ${type === 'success' ? 'bg-slate-800' : 'bg-red-600'} text-white px-8 py-3 rounded-xl shadow-2xl z-50 text-sm font-bold`;
             toast.innerText = msg;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
+
+        document.getElementById('date').valueAsDate = new Date();
     </script>
 </body>
 </html>
