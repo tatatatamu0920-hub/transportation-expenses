@@ -5,321 +5,378 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>交通費申請システム</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
-        body { font-family: 'Noto Sans JP', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .loading-spinner { border-top-color: #4f46e5; animation: spinner 0.6s linear infinite; }
-        @keyframes spinner { to { transform: rotate(360deg); } }
-        input[type="text"], input[type="number"], input[type="email"], input[type="password"], input[type="date"] {
-            font-size: 16px !important;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background-color: #f8fafc;
+        }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-900">
+<body class="min-h-screen text-slate-800">
 
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center p-6 text-center">
-        <div class="w-12 h-12 border-4 border-slate-200 rounded-full loading-spinner mb-4"></div>
-        <p id="loading-text" class="text-slate-500 font-bold tracking-widest text-sm">システムを起動中...</p>
-    </div>
-
-    <!-- Auth Screen -->
-    <div id="auth-screen" class="hidden min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 sm:p-8 w-full max-w-md">
-            <div class="text-center mb-6">
-                <div class="bg-indigo-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fa-solid fa-lock text-xl text-indigo-600"></i>
-                </div>
-                <h1 id="auth-title" class="text-xl font-bold text-slate-900">ログイン</h1>
-                <p class="text-slate-500 text-xs mt-1">
-                    <span id="env-badge" class="px-2 py-0.5 rounded bg-amber-100 text-amber-700 font-bold mr-1 hidden">オフラインモード</span>
-                    アカウント情報を入力してください
-                </p>
-            </div>
-            <form id="auth-form" class="space-y-4">
+    <div id="app" class="max-w-4xl mx-auto py-8 px-4">
+        <!-- ログイン画面 -->
+        <div id="login-screen" class="max-w-md mx-auto mt-20 p-8 glass-morphism rounded-2xl shadow-xl">
+            <h1 class="text-2xl font-bold text-center mb-6 text-indigo-700">交通費申請システム</h1>
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1 ml-1">メールアドレス</label>
-                    <input type="email" id="auth-email" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="example@company.com">
+                    <label class="block text-sm font-medium mb-1">ユーザーID</label>
+                    <input type="text" id="login-id" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="admin or user">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1 ml-1">パスワード</label>
-                    <input type="password" id="auth-password" required minlength="6" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="6文字以上">
+                    <label class="block text-sm font-medium mb-1">パスワード</label>
+                    <input type="password" id="login-pw" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="admin or user">
                 </div>
-                <div id="auth-name-container" class="hidden animate-in fade-in duration-300">
-                    <label class="block text-xs font-bold text-slate-500 mb-1 ml-1">表示名</label>
-                    <input type="text" id="auth-name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="山田 太郎">
-                    <div class="flex items-center mt-4 p-3 bg-indigo-50/50 rounded-xl border border-indigo-100">
-                        <input type="checkbox" id="auth-admin" class="w-5 h-5 text-indigo-600 rounded-md">
-                        <label for="auth-admin" class="ml-2 text-sm text-slate-700 font-medium">管理者として登録する</label>
-                    </div>
-                </div>
-                <button type="submit" id="auth-submit-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-md active:scale-[0.98] transition-all">
-                    ログイン
-                </button>
-            </form>
-            <div class="mt-6 text-center">
-                <button id="toggle-auth-mode" class="text-sm text-indigo-600 hover:underline font-bold">
-                    新規アカウントを作成する
-                </button>
+                <button onclick="handleLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-lg transition-colors">ログイン</button>
+                <p class="text-xs text-slate-500 text-center mt-4">テスト用：admin/admin または user/user</p>
             </div>
         </div>
-    </div>
 
-    <!-- Main App Screen -->
-    <div id="app-screen" class="hidden">
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
-            <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-train-subway text-indigo-600 text-xl"></i>
-                    <h1 class="text-base font-black text-slate-900 tracking-tight">交通費申請</h1>
+        <!-- メインコンテンツ（ログイン後） -->
+        <div id="main-content" class="hidden">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900" id="welcome-msg">こんにちは</h1>
+                    <p class="text-slate-500" id="role-badge"></p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <div id="user-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full text-xs font-bold text-slate-700 border border-slate-200"></div>
-                    <button id="logout-btn" class="p-2.5 text-slate-400 hover:text-rose-500 rounded-xl hover:bg-rose-50 transition-all">
-                        <i class="fa-solid fa-right-from-bracket text-lg"></i>
-                    </button>
-                </div>
-            </div>
-        </header>
+                <button onclick="handleLogout()" class="text-slate-500 hover:text-red-500 text-sm font-medium">ログアウト</button>
+            </header>
 
-        <main class="max-w-5xl mx-auto px-4 py-6">
-            <div id="user-view" class="hidden space-y-6">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-bold flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-indigo-500 text-sm"></i> 申請管理
+            <!-- ユーザー用：申請フォーム -->
+            <section id="user-view" class="hidden space-y-6">
+                <div class="p-6 glass-morphism rounded-xl shadow-md">
+                    <h2 class="text-lg font-bold mb-4 flex items-center">
+                        <span class="w-2 h-6 bg-indigo-500 rounded mr-2"></span>
+                        新規交通費申請
                     </h2>
-                    <button id="show-form-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-md">
-                        <i class="fa-solid fa-plus text-xs"></i> 申請作成
-                    </button>
-                </div>
+                    <form id="expense-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="col-span-1">
+                            <label class="block text-sm font-medium mb-1">日付</label>
+                            <input type="date" id="date" required class="w-full px-3 py-2 border rounded-lg">
+                        </div>
+                        <div class="col-span-1">
+                            <label class="block text-sm font-medium mb-1">件名 (例: A社定期訪問)</label>
+                            <input type="text" id="subject" required class="w-full px-3 py-2 border rounded-lg">
+                        </div>
+                        
+                        <div class="col-span-2 border-t pt-4 mt-2">
+                            <h3 class="text-sm font-bold text-slate-600 mb-2">振込先情報 (保存されます)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="text" id="bank-info" placeholder="銀行名・支店名" required class="px-3 py-2 border rounded-lg">
+                                <input type="text" id="account-info" placeholder="口座番号・名義" required class="px-3 py-2 border rounded-lg">
+                            </div>
+                        </div>
 
-                <div id="expense-form-container" class="hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <form id="expense-form" class="space-y-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="sm:col-span-2">
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">用件・行き先</label>
-                                <input type="text" id="exp-title" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="例: A社 定例会議">
+                        <div class="col-span-2 border-t pt-4 mt-2">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="transport" value="電車" checked class="form-radio text-indigo-600">
+                                    <span class="ml-2">電車</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="transport" value="バス" class="form-radio text-indigo-600">
+                                    <span class="ml-2">バス</span>
+                                </label>
                             </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">利用日</label>
-                                <input type="date" id="exp-date" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">片道運賃 (円)</label>
-                                <input type="number" id="exp-amount" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none" placeholder="540">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">出発駅</label>
-                                <input type="text" id="exp-from" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none" placeholder="新宿">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">到着駅</label>
-                                <input type="text" id="exp-to" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none" placeholder="渋谷">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-xs font-bold text-indigo-600 mb-1">【往路】</p>
+                                    <input type="text" id="from-station" placeholder="乗車点" required class="w-full px-3 py-2 border rounded-lg mb-2">
+                                    <input type="text" id="to-station" placeholder="目的地" required class="w-full px-3 py-2 border rounded-lg">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <p class="text-xs font-bold text-indigo-600">【復路】</p>
+                                        <label class="inline-flex items-center text-xs text-slate-500 cursor-pointer">
+                                            <input type="checkbox" id="round-trip" onchange="toggleReturnTrip()" class="form-checkbox">
+                                            <span class="ml-1 font-bold">往復（往路と同じ）</span>
+                                        </label>
+                                    </div>
+                                    <div id="return-inputs">
+                                        <input type="text" id="return-from" placeholder="乗車点" class="w-full px-3 py-2 border rounded-lg mb-2">
+                                        <input type="text" id="return-to" placeholder="目的地" class="w-full px-3 py-2 border rounded-lg">
+                                    </div>
+                                    <div id="return-placeholder" class="hidden h-20 flex items-center justify-center border-2 border-dashed rounded-lg text-slate-400 text-sm">
+                                        往復のため入力を省略
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100 flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <input type="checkbox" id="exp-is-round-trip" checked class="w-5 h-5 text-indigo-600 rounded-md">
-                                <label for="exp-is-round-trip" class="text-sm font-bold text-indigo-900 cursor-pointer">往復計算</label>
-                            </div>
-                            <div id="total-preview" class="text-lg font-black text-indigo-600 tracking-tight">合計: ¥0</div>
-                        </div>
-                        <div class="flex gap-3 pt-4 border-t border-slate-100">
-                            <button type="button" id="cancel-form-btn" class="flex-1 py-3 text-slate-500 font-bold hover:bg-slate-50 rounded-xl">キャンセル</button>
-                            <button type="submit" id="submit-btn" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-md">送信する</button>
+
+                        <div class="col-span-2 mt-4">
+                            <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition shadow-lg">申請する</button>
                         </div>
                     </form>
                 </div>
 
-                <div id="user-expense-list" class="grid gap-3"></div>
-            </div>
-
-            <div id="admin-view" class="hidden space-y-4">
-                <h2 class="text-lg font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-shield-halved text-indigo-600 text-sm"></i> 承認待ちリスト
-                </h2>
-                <div id="admin-expense-list" class="grid gap-3"></div>
-            </div>
-        </main>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, onSnapshot, addDoc, updateDoc, deleteDoc, query, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // --- Firebase Config Handling ---
-        let config = null;
-        try { config = JSON.parse(__firebase_config); } catch (e) { console.log("Offline mode: No config found."); }
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'local-simulation-app';
-
-        let db = null;
-        let auth = null;
-        let currentUser = { uid: 'local-user-' + Math.random().toString(36).substr(2, 9) };
-        let userProfile = null;
-        let unsub = null;
-
-        const showScreen = (id) => {
-            document.getElementById('loading-overlay').classList.add('hidden');
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('app-screen').classList.add('hidden');
-            document.getElementById(id).classList.remove('hidden');
-        };
-
-        const init = async () => {
-            if (config) {
-                const app = initializeApp(config);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                onAuthStateChanged(auth, (user) => {
-                    if (user) { currentUser = user; showScreen('auth-screen'); }
-                    else { signInAnonymously(auth).catch(() => showScreen('auth-screen')); }
-                });
-            } else {
-                document.getElementById('env-badge').classList.remove('hidden');
-                showScreen('auth-screen');
-            }
-        };
-
-        // --- Auth UI ---
-        const authNameContainer = document.getElementById('auth-name-container');
-        const toggleBtn = document.getElementById('toggle-auth-mode');
-        toggleBtn.onclick = () => {
-            const isReg = authNameContainer.classList.toggle('hidden');
-            document.getElementById('auth-title').innerText = isReg ? 'ログイン' : '新規登録';
-            document.getElementById('auth-submit-btn').innerText = isReg ? 'ログイン' : '登録する';
-            toggleBtn.innerText = isReg ? '新規アカウントを作成する' : '既にアカウントをお持ちの方';
-        };
-
-        document.getElementById('auth-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const isSignUp = !authNameContainer.classList.contains('hidden');
-
-            // シミュレーション用プロファイル
-            userProfile = {
-                uid: currentUser.uid,
-                email: email,
-                name: document.getElementById('auth-name').value || email.split('@')[0],
-                isAdmin: document.getElementById('auth-admin').checked
-            };
-
-            // DBがある場合のみ保存
-            if (db) {
-                try {
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid), userProfile);
-                } catch(err) { console.warn("DB Save failed (Offline?):", err); }
-            }
-            
-            startApp();
-        };
-
-        const startApp = () => {
-            const badge = document.getElementById('user-badge');
-            badge.classList.remove('hidden');
-            badge.innerHTML = `<i class="fa-solid ${userProfile.isAdmin ? 'fa-user-shield text-indigo-600' : 'fa-user'}"></i> ${userProfile.name}`;
-            
-            if (userProfile.isAdmin) {
-                document.getElementById('admin-view').classList.remove('hidden');
-                document.getElementById('user-view').classList.add('hidden');
-            } else {
-                document.getElementById('admin-view').classList.add('hidden');
-                document.getElementById('user-view').classList.remove('hidden');
-            }
-
-            if (db) {
-                const q = collection(db, 'artifacts', appId, 'public', 'data', 'expenses');
-                unsub = onSnapshot(q, (snapshot) => {
-                    const items = snapshot.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => b.createdAt - a.createdAt);
-                    renderList(userProfile.isAdmin ? 'admin-expense-list' : 'user-expense-list', userProfile.isAdmin ? items : items.filter(i => i.userId === userProfile.uid), userProfile.isAdmin);
-                });
-            } else {
-                // オフライン時のダミー表示
-                renderList(userProfile.isAdmin ? 'admin-expense-list' : 'user-expense-list', [], userProfile.isAdmin);
-            }
-            showScreen('app-screen');
-        };
-
-        const renderList = (id, items, isAdmin) => {
-            const el = document.getElementById(id);
-            if (!items.length) { 
-                el.innerHTML = `<div class="bg-white p-12 text-center rounded-2xl border-2 border-dashed border-slate-200 text-slate-400 font-bold">
-                    ${db ? '申請データがありません' : 'DB接続なし（プレビュー画面でお試しください）'}
-                </div>`; 
-                return; 
-            }
-            el.innerHTML = items.map(item => `
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <div class="flex gap-2 items-center mb-1.5">
-                            <span class="text-[9px] font-black px-2 py-0.5 rounded-full border uppercase tracking-wider ${
-                                item.status==='approved'?'bg-emerald-50 text-emerald-600 border-emerald-100' : 
-                                item.status==='rejected'?'bg-rose-50 text-rose-600 border-rose-100' : 'bg-amber-50 text-amber-600 border-amber-100'
-                            }">${item.status==='pending' ? '承認待ち' : (item.status==='approved' ? '承認済み' : '却下')}</span>
-                            <span class="text-[10px] text-slate-400 font-bold">${item.date}</span>
-                        </div>
-                        <div class="font-bold text-slate-900">${item.title}</div>
-                        <div class="text-xs text-slate-500">${item.fromStation} → ${item.toStation}</div>
-                    </div>
-                    <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
-                        <div class="text-xl font-black text-slate-900">¥${item.totalAmount.toLocaleString()}</div>
-                        ${db ? `
-                            <div class="flex gap-1.5">
-                                ${isAdmin && item.status==='pending' ? `
-                                    <button onclick="window.updStatus('${item.id}','approved')" class="w-10 h-10 flex items-center justify-center bg-emerald-50 text-emerald-600 rounded-xl"><i class="fa-solid fa-check"></i></button>
-                                    <button onclick="window.updStatus('${item.id}','rejected')" class="w-10 h-10 flex items-center justify-center bg-rose-50 text-rose-600 rounded-xl"><i class="fa-solid fa-xmark"></i></button>
-                                ` : ''}
-                                ${!isAdmin && item.status==='pending' ? `<button onclick="window.delExp('${item.id}')" class="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-rose-500 rounded-xl"><i class="fa-solid fa-trash-can"></i></button>` : ''}
-                            </div>
-                        ` : ''}
+                <div class="p-6 glass-morphism rounded-xl shadow-md">
+                    <h2 class="text-lg font-bold mb-4">自分の申請一覧</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b text-slate-500 text-sm">
+                                    <th class="py-2">日付</th>
+                                    <th class="py-2">件名</th>
+                                    <th class="py-2">区間</th>
+                                    <th class="py-2">ステータス</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-request-list">
+                                <!-- JSで挿入 -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            `).join('');
+            </section>
+
+            <!-- 管理者用：申請一覧 -->
+            <section id="admin-view" class="hidden space-y-6">
+                <div class="p-6 glass-morphism rounded-xl shadow-md">
+                    <h2 class="text-lg font-bold mb-4">管理者用：承認待ち一覧</h2>
+                    
+                    <!-- フィルタ -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-slate-50 rounded-lg">
+                        <div>
+                            <label class="block text-xs font-bold mb-1">期間（開始）</label>
+                            <input type="date" id="filter-start" oninput="renderAdminList()" class="w-full px-3 py-1 text-sm border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1">期間（終了）</label>
+                            <input type="date" id="filter-end" oninput="renderAdminList()" class="w-full px-3 py-1 text-sm border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold mb-1">件名フィルタ</label>
+                            <input type="text" id="filter-subject" oninput="renderAdminList()" placeholder="キーワード検索" class="w-full px-3 py-1 text-sm border rounded">
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b text-slate-500 text-sm">
+                                    <th class="py-2">申請者</th>
+                                    <th class="py-2">日付 (修正可)</th>
+                                    <th class="py-2">件名 (修正可)</th>
+                                    <th class="py-2">区間</th>
+                                    <th class="py-2">振込先</th>
+                                    <th class="py-2">アクション</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-request-list" class="text-sm">
+                                <!-- JSで挿入 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // --- 状態管理 ---
+        let currentUser = null;
+        let requests = [];
+        // 振込先情報の簡易永続化（リロードすると消えますが、セッション中は維持）
+        let savedBankInfo = {
+            bank: '',
+            account: ''
         };
 
-        window.updStatus = (id, s) => db && updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'expenses', id), {status: s});
-        window.delExp = (id) => db && confirm('削除しますか？') && deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'expenses', id));
+        // ダミーデータ
+        const INITIAL_DATA = [
+            { id: 1, userId: 'user', userName: '一般ユーザー', date: '2023-10-01', subject: 'A社商談', transport: '電車', from: '新宿', to: '渋谷', isRoundTrip: true, bank: 'みずほ銀行', account: '1234567', status: '受理' },
+            { id: 2, userId: 'user', userName: '一般ユーザー', date: '2023-10-05', subject: '備品買い出し', transport: 'バス', from: '中野', to: '高円寺', isRoundTrip: false, returnFrom: '高円寺', returnTo: '中野', bank: 'みずほ銀行', account: '1234567', status: '申請中' }
+        ];
+        requests = [...INITIAL_DATA];
 
-        document.getElementById('logout-btn').onclick = () => { if(unsub)unsub(); showScreen('auth-screen'); };
-        document.getElementById('show-form-btn').onclick = () => {
-            document.getElementById('expense-form-container').classList.remove('hidden');
-            document.getElementById('show-form-btn').classList.add('hidden');
-        };
-        document.getElementById('cancel-form-btn').onclick = () => {
-            document.getElementById('expense-form-container').classList.add('hidden');
-            document.getElementById('show-form-btn').classList.remove('hidden');
-        };
+        // --- ログイン処理 ---
+        function handleLogin() {
+            const id = document.getElementById('login-id').value;
+            const pw = document.getElementById('login-pw').value;
 
-        document.getElementById('exp-amount').oninput = () => {
-            const a = Number(document.getElementById('exp-amount').value) || 0;
-            const r = document.getElementById('exp-is-round-trip').checked;
-            document.getElementById('total-preview').innerText = `合計: ¥${(r ? a*2 : a).toLocaleString()}`;
-        };
+            if (id === 'admin' && pw === 'admin') {
+                currentUser = { id: 'admin', name: '管理者', role: 'admin' };
+            } else if (id === 'user' && pw === 'user') {
+                currentUser = { id: 'user', name: '一般ユーザー', role: 'user' };
+            } else {
+                showMessage('IDまたはパスワードが違います');
+                return;
+            }
 
-        document.getElementById('expense-form').onsubmit = async (e) => {
-            e.preventDefault();
-            if(!db) return alert("DB未接続です。プレビュー画面で送信をお試しください。");
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            document.getElementById('welcome-msg').innerText = `こんにちは、${currentUser.name}さん`;
+            document.getElementById('role-badge').innerText = currentUser.role === 'admin' ? '管理者権限' : '一般ユーザー';
             
-            const a = Number(document.getElementById('exp-amount').value);
-            const r = document.getElementById('exp-is-round-trip').checked;
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'expenses'), {
-                    userId: userProfile.uid, userName: userProfile.name,
-                    title: document.getElementById('exp-title').value,
-                    date: document.getElementById('exp-date').value,
-                    fromStation: document.getElementById('exp-from').value,
-                    toStation: document.getElementById('exp-to').value,
-                    totalAmount: r ? a*2 : a, isRoundTrip: r,
-                    status: 'pending', createdAt: Date.now()
-                });
-                document.getElementById('expense-form').reset();
-                document.getElementById('cancel-form-btn').click();
-            } catch(err) { alert("送信失敗"); }
+            if (currentUser.role === 'admin') {
+                document.getElementById('admin-view').classList.remove('hidden');
+                document.getElementById('user-view').classList.add('hidden');
+                renderAdminList();
+            } else {
+                document.getElementById('user-view').classList.remove('hidden');
+                document.getElementById('admin-view').classList.add('hidden');
+                autoFillBankInfo();
+                renderUserList();
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('main-content').classList.add('hidden');
+            document.getElementById('expense-form').reset();
+        }
+
+        // --- フォーム制御 ---
+        function toggleReturnTrip() {
+            const isRoundTrip = document.getElementById('round-trip').checked;
+            const inputs = document.getElementById('return-inputs');
+            const placeholder = document.getElementById('return-placeholder');
+            
+            if (isRoundTrip) {
+                inputs.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                document.getElementById('return-from').required = false;
+                document.getElementById('return-to').required = false;
+            } else {
+                inputs.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                document.getElementById('return-from').required = true;
+                document.getElementById('return-to').required = true;
+            }
+        }
+
+        function autoFillBankInfo() {
+            if (savedBankInfo.bank) {
+                document.getElementById('bank-info').value = savedBankInfo.bank;
+                document.getElementById('account-info').value = savedBankInfo.account;
+            }
+        }
+
+        // --- 申請処理 ---
+        document.getElementById('expense-form').onsubmit = function(e) {
+            e.preventDefault();
+            
+            // 振込先情報を保存
+            savedBankInfo.bank = document.getElementById('bank-info').value;
+            savedBankInfo.account = document.getElementById('account-info').value;
+
+            const newRequest = {
+                id: Date.now(),
+                userId: currentUser.id,
+                userName: currentUser.name,
+                date: document.getElementById('date').value,
+                subject: document.getElementById('subject').value,
+                bank: savedBankInfo.bank,
+                account: savedBankInfo.account,
+                transport: document.querySelector('input[name="transport"]:checked').value,
+                from: document.getElementById('from-station').value,
+                to: document.getElementById('to-station').value,
+                isRoundTrip: document.getElementById('round-trip').checked,
+                returnFrom: document.getElementById('return-from').value,
+                returnTo: document.getElementById('return-to').value,
+                status: '申請中'
+            };
+
+            requests.unshift(newRequest);
+            renderUserList();
+            this.reset();
+            toggleReturnTrip();
+            autoFillBankInfo();
+            showMessage('申請が完了しました');
         };
 
-        init();
-        document.getElementById('exp-date').value = new Date().toISOString().split('T')[0];
+        // --- 描画処理 ---
+        function renderUserList() {
+            const list = document.getElementById('user-request-list');
+            const userRequests = requests.filter(r => r.userId === currentUser.id);
+            
+            list.innerHTML = userRequests.map(r => `
+                <tr class="border-b hover:bg-white/50 transition">
+                    <td class="py-3">${r.date}</td>
+                    <td class="py-3 font-medium">${r.subject}</td>
+                    <td class="py-3 text-xs text-slate-600">
+                        ${r.from} ↔ ${r.to} (${r.transport}${r.isRoundTrip ? '/往復' : '/片道'})
+                    </td>
+                    <td class="py-3">
+                        <span class="px-2 py-1 rounded-full text-xs font-bold ${r.status === '受理' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">
+                            ${r.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-request-list');
+            const start = document.getElementById('filter-start').value;
+            const end = document.getElementById('filter-end').value;
+            const sub = document.getElementById('filter-subject').value.toLowerCase();
+
+            const filtered = requests.filter(r => {
+                const matchesDate = (!start || r.date >= start) && (!end || r.date <= end);
+                const matchesSubject = !sub || r.subject.toLowerCase().includes(sub);
+                return matchesDate && matchesSubject;
+            });
+
+            list.innerHTML = filtered.map(r => `
+                <tr class="border-b bg-white">
+                    <td class="py-4 px-2 font-bold text-indigo-600">${r.userName}</td>
+                    <td class="py-4 px-2">
+                        <input type="date" value="${r.date}" onchange="updateRequest(${r.id}, 'date', this.value)" class="border rounded px-1 text-xs">
+                    </td>
+                    <td class="py-4 px-2">
+                        <input type="text" value="${r.subject}" onchange="updateRequest(${r.id}, 'subject', this.value)" class="border rounded px-1 text-xs w-full">
+                    </td>
+                    <td class="py-4 px-2 text-xs">
+                        ${r.transport}: ${r.from} → ${r.to}<br>
+                        ${r.isRoundTrip ? '(往復)' : '復路: ' + r.returnFrom + ' → ' + r.returnTo}
+                    </td>
+                    <td class="py-4 px-2 text-[10px] text-slate-500">
+                        ${r.bank}<br>${r.account}
+                    </td>
+                    <td class="py-4 px-2">
+                        ${r.status === '申請中' 
+                            ? `<button onclick="approveRequest(${r.id})" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-bold transition">受理する</button>`
+                            : `<span class="text-green-600 font-bold">✓ 受理済み</span>`
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- 管理者アクション ---
+        function approveRequest(id) {
+            const req = requests.find(r => r.id === id);
+            if (req) {
+                req.status = '受理';
+                renderAdminList();
+            }
+        }
+
+        function updateRequest(id, field, value) {
+            const req = requests.find(r => r.id === id);
+            if (req) {
+                req[field] = value;
+                console.log(`Updated ${field} for request ${id} to ${value}`);
+            }
+        }
+
+        // --- ユーティリティ ---
+        function showMessage(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl z-50 text-sm font-medium';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
     </script>
 </body>
 </html>
