@@ -156,8 +156,9 @@
                         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                     </svg>
                 </div>
-                <h1 class="text-2xl font-bold text-slate-800">Transport Hub</h1>
-                <p class="text-slate-400 text-sm mt-1">Smart Expense Management</p>
+                <h1 class="text-2xl font-bold text-slate-800">Transportation expense</h1>
+                <p class="text-2xl font-bold text-slate-800">management system</p>
+                <p class="text-slate-400 text-sm mt-1">JEC連合 化学一般埼玉県本部専用</p>
             </div>
 
             <div class="flex p-1 bg-slate-100 rounded-xl mb-8">
@@ -175,9 +176,9 @@
             </div>
 
             <div id="register-form" class="hidden space-y-5">
-                <input type="text" id="reg-name" class="w-full px-4 py-3.5 input-elegant" placeholder="Full Name">
-                <input type="email" id="reg-id" class="w-full px-4 py-3.5 input-elegant" placeholder="Email">
-                <input type="password" id="reg-pw" class="w-full px-4 py-3.5 input-elegant" placeholder="Password">
+                <input type="text" id="reg-name" class="w-full px-4 py-3.5 input-elegant" placeholder="埼玉 太郎">
+                <input type="email" id="reg-id" class="w-full px-4 py-3.5 input-elegant" placeholder="example@mail.com">
+                <input type="password" id="reg-pw" class="w-full px-4 py-3.5 input-elegant" placeholder="8文字以上の英数字">
                 <button onclick="handleRegister()" class="w-full bg-slate-800 text-white py-4 rounded-xl font-bold mt-2">利用申請を送る</button>
             </div>
         </div>
@@ -210,7 +211,7 @@
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-400 uppercase mb-2">件名 / 目的</label>
-                                <input type="text" id="subject" required class="w-full px-4 py-3 input-elegant" placeholder="例: ○○社 定期打ち合わせ">
+                                <input type="text" id="subject" required class="w-full px-4 py-3 input-elegant" placeholder="例:第1回執行委員会">
                             </div>
                         </div>
 
@@ -243,7 +244,7 @@
                                             <input type="checkbox" id="round-trip" onchange="calculateAmount()" class="w-4 h-4 rounded text-indigo-600">
                                         </label>
                                     </div>
-                                    <input type="number" id="unit-price" placeholder="0" required oninput="calculateAmount()" class="w-full bg-transparent text-3xl font-bold text-indigo-600 border-none text-center focus:outline-none">
+                                    <input id="unit-price" placeholder="0" required oninput="calculateAmount()" class="w-full bg-transparent text-3xl font-bold text-indigo-600 border-none text-center focus:outline-none">
                                     <div class="mt-4 pt-4 border-t border-slate-200 flex justify-between">
                                         <span class="text-xs font-bold text-slate-400">合計</span>
                                         <span class="text-xl font-bold text-slate-700" id="total-display">¥ 0</span>
