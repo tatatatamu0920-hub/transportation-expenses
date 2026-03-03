@@ -185,14 +185,8 @@
         <!-- メインコンテンツ -->
         <div id="main-content" class="hidden fade-in">
             <header class="flex justify-between items-center mb-8 px-2">
-               <div>
-                    <div class="flex items-center gap-3">
-                        <h1 class="text-xl font-bold text-slate-800" id="welcome-msg">こんにちは</h1>
-                        <!-- Password Change Button (Visible only for users, not hardcoded admin) -->
-                        <button id="pw-change-btn" onclick="openPasswordModal()" class="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded hover:bg-slate-200 transition-colors font-bold uppercase tracking-tight hidden">
-                            パスワード変更
-                        </button>
-                    </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800" id="welcome-msg">こんにちは</h1>
                     <div id="role-badge" class="inline-block px-2 py-0.5 bg-indigo-50 text-indigo-500 rounded text-[9px] font-bold uppercase tracking-wider mt-1"></div>
                 </div>
                 <button onclick="handleLogout()" class="px-4 py-2 bg-white text-slate-400 hover:text-rose-500 border border-slate-100 rounded-xl text-xs font-bold transition-all shadow-sm">
@@ -361,34 +355,7 @@
             </div>
         </div>
     </div>
-    <!-- パスワード変更モーダル -->
-    <div id="pw-change-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 modal-overlay">
-        <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden fade-in">
-            <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-slate-700">パスワード変更</h3>
-                <button onclick="closeModal('pw-change-modal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
-            </div>
-            <div class="p-8 space-y-4">
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase">現在のパスワード</label>
-                    <input type="password" id="old-pw" class="w-full px-4 py-2.5 input-elegant text-sm">
-                </div>
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase">新しいパスワード</label>
-                    <input type="password" id="new-pw" class="w-full px-4 py-2.5 input-elegant text-sm">
-                </div>
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase">新しいパスワード（確認）</label>
-                    <input type="password" id="new-pw-confirm" class="w-full px-4 py-2.5 input-elegant text-sm">
-                </div>
-            </div>
-            <div class="px-8 py-6 border-t grid grid-cols-2 gap-3">
-                <button onclick="closeModal('pw-change-modal')" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">キャンセル</button>
-                <button onclick="handlePasswordChange()" class="px-6 py-2 btn-primary font-bold rounded-xl text-sm">変更を保存</button>
-            </div>
-        </div>
-    </div>
-    
+
     <!-- 削除確認モーダル -->
     <div id="delete-confirm-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden fade-in">
@@ -489,14 +456,6 @@
             document.getElementById('main-content').classList.remove('hidden');
             document.getElementById('welcome-msg').innerText = `${currentUser.name} 様`;
             document.getElementById('role-badge').innerText = currentUser.role === 'admin' ? 'Administrator' : 'General User';
-            sList.add('hidden');    // 管理者の場合は非表示（必要に応じて）
-            // Password change button only for non-hardcoded admin
-            const pwBtn = document.getElementById('pw-change-btn');
-            if (currentUser.id !== ADMIN_ID) {
-                pwBtn.classList.remove('hidden');
-            } else {
-                pwBtn.classList.add('hidden');
-            }
             if (currentUser.role === 'admin') {
                 document.getElementById('admin-view').classList.remove('hidden');
                 document.getElementById('user-view').classList.add('hidden');
