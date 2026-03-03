@@ -489,6 +489,14 @@
             document.getElementById('main-content').classList.remove('hidden');
             document.getElementById('welcome-msg').innerText = `${currentUser.name} 様`;
             document.getElementById('role-badge').innerText = currentUser.role === 'admin' ? 'Administrator' : 'General User';
+            sList.add('hidden');    // 管理者の場合は非表示（必要に応じて）
+            // Password change button only for non-hardcoded admin
+            const pwBtn = document.getElementById('pw-change-btn');
+            if (currentUser.id !== ADMIN_ID) {
+                pwBtn.classList.remove('hidden');
+            } else {
+                pwBtn.classList.add('hidden');
+            }
             if (currentUser.role === 'admin') {
                 document.getElementById('admin-view').classList.remove('hidden');
                 document.getElementById('user-view').classList.add('hidden');
