@@ -355,7 +355,34 @@
             </div>
         </div>
     </div>
-
+    <!-- パスワード変更モーダル -->
+    <div id="pw-change-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 modal-overlay">
+        <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden fade-in">
+            <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-700">パスワード変更</h3>
+                <button onclick="closeModal('pw-change-modal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
+            </div>
+            <div class="p-8 space-y-4">
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase">現在のパスワード</label>
+                    <input type="password" id="old-pw" class="w-full px-4 py-2.5 input-elegant text-sm">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase">新しいパスワード</label>
+                    <input type="password" id="new-pw" class="w-full px-4 py-2.5 input-elegant text-sm">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase">新しいパスワード（確認）</label>
+                    <input type="password" id="new-pw-confirm" class="w-full px-4 py-2.5 input-elegant text-sm">
+                </div>
+            </div>
+            <div class="px-8 py-6 border-t grid grid-cols-2 gap-3">
+                <button onclick="closeModal('pw-change-modal')" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">キャンセル</button>
+                <button onclick="handlePasswordChange()" class="px-6 py-2 btn-primary font-bold rounded-xl text-sm">変更を保存</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- 削除確認モーダル -->
     <div id="delete-confirm-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden fade-in">
