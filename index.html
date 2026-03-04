@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transport Expense - ID Management System</title>
+    <title>清算navi - JEC連合化学一般埼玉県本部専用</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Quicksand:wght@500;600;700&display=swap');
@@ -31,11 +31,9 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
         }
 
-        /* モバイル向けテーブル改善スタイル */
-        @media (max-width: 640px) {
-            .responsive-table thead {
-                display: none; /* ヘッダーを隠す */
-            }
+        /* Responsive Table adjustments */
+        @media (max-width: 767px) {
+            .responsive-table thead { display: none; }
             .responsive-table tr {
                 display: block;
                 margin-bottom: 1rem;
@@ -60,10 +58,27 @@
                 text-transform: uppercase;
                 text-align: left;
             }
-            .responsive-table td:last-child {
-                border-top: 1px solid #f8fafb !important;
-                margin-top: 0.5rem;
-                padding-top: 0.75rem !important;
+        }
+
+        /* Desktop specific table styling: Force horizontal alignment */
+        @media (min-width: 768px) {
+            .responsive-table {
+                display: table !important;
+                width: 100% !important;
+                border-collapse: collapse;
+                table-layout: auto;
+            }
+            .responsive-table tr {
+                display: table-row !important;
+            }
+            .responsive-table td, .responsive-table th {
+                display: table-cell !important;
+                white-space: nowrap; /* Prevent wrapping in desktop view */
+            }
+            /* Subject column can wrap slightly if very long, but let's keep others tight */
+            .col-subject {
+                white-space: normal !important;
+                min-width: 150px;
             }
         }
 
@@ -88,11 +103,6 @@
             box-shadow: 0 4px 12px rgba(94, 106, 210, 0.3);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(94, 106, 210, 0.4);
-        }
-
         .status-badge {
             padding: 4px 12px;
             border-radius: 100px;
@@ -108,7 +118,6 @@
             padding: 2px 6px;
             border-radius: 10px;
             margin-left: 6px;
-            vertical-align: middle;
         }
 
         .favorite-tag {
@@ -123,14 +132,6 @@
             gap: 6px;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-
-        .favorite-tag:hover {
-            background: #fff;
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-1px);
         }
 
         .modal-overlay {
@@ -148,7 +149,7 @@
 <body class="min-h-screen pb-12">
 
     <div id="app" class="max-w-4xl mx-auto py-8 px-4">
-        <!-- 認証画面 -->
+        <!-- Auth Screen -->
         <div id="auth-screen" class="max-w-md mx-auto mt-12 soft-card p-8 md:p-10 fade-in">
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl mb-4">
@@ -156,8 +157,8 @@
                         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                     </svg>
                 </div>
-                <h1 class="text-2xl font-bold text-slate-800">清算ナビ</h1>
-                <p class="text-slate-400 text-sm mt-1">JEC連合 化学一般埼玉県本部専用</p>
+                <h1 class="text-2xl font-bold text-slate-800">清算navi</h1>
+                <p class="text-slate-400 text-[11px] font-bold mt-1 uppercase tracking-wider">JEC連合化学一般埼玉県本部専用</p>
             </div>
 
             <div class="flex p-1 bg-slate-100 rounded-xl mb-8">
@@ -165,28 +166,32 @@
                 <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 py-2 text-sm font-bold text-slate-500 rounded-lg">新規登録</button>
             </div>
 
-            <div id="login-form" class="space-y-5">
-                <div class="relative">
-                    <input type="text" id="login-id" list="id-list" class="w-full px-4 py-3.5 input-elegant" placeholder="ID / Email">
-                    <datalist id="id-list"></datalist>
-                </div>
-                <input type="password" id="login-pw" class="w-full px-4 py-3.5 input-elegant" placeholder="Password">
-                <button onclick="handleLogin()" class="w-full btn-primary py-4 rounded-xl font-bold mt-2">ログインする</button>
-            </div>
+            <!-- Login Form with proper attributes for autocomplete -->
+            <form id="login-form" class="space-y-5" onsubmit="event.preventDefault(); handleLogin();">
+                <input type="text" id="login-id" name="username" autocomplete="username" list="id-list" class="w-full px-4 py-3.5 input-elegant" placeholder="ID / Email">
+                <datalist id="id-list"></datalist>
+                <input type="password" id="login-pw" name="password" autocomplete="current-password" class="w-full px-4 py-3.5 input-elegant" placeholder="Password">
+                <button type="submit" class="w-full btn-primary py-4 rounded-xl font-bold mt-2">ログインする</button>
+            </form>
 
-            <div id="register-form" class="hidden space-y-5">
-                <input type="text" id="reg-name" class="w-full px-4 py-3.5 input-elegant" placeholder="埼玉 太郎">
-                <input type="email" id="reg-id" class="w-full px-4 py-3.5 input-elegant" placeholder="example@mail.com">
-                <input type="password" id="reg-pw" class="w-full px-4 py-3.5 input-elegant" placeholder="8文字以上の英数字">
-                <button onclick="handleRegister()" class="w-full bg-slate-800 text-white py-4 rounded-xl font-bold mt-2">利用申請を送る</button>
-            </div>
+            <form id="register-form" class="hidden space-y-5" onsubmit="event.preventDefault(); handleRegister();">
+                <input type="text" id="reg-name" name="name" class="w-full px-4 py-3.5 input-elegant" placeholder="埼玉 太郎">
+                <input type="email" id="reg-id" name="email" autocomplete="username" class="w-full px-4 py-3.5 input-elegant" placeholder="example@mail.com">
+                <input type="password" id="reg-pw" name="new-password" autocomplete="new-password" class="w-full px-4 py-3.5 input-elegant" placeholder="8文字以上の英数字">
+                <button type="submit" class="w-full bg-slate-800 text-white py-4 rounded-xl font-bold mt-2">利用申請を送る</button>
+            </form>
         </div>
 
-        <!-- メインコンテンツ -->
+        <!-- Main Content -->
         <div id="main-content" class="hidden fade-in">
-            <header class="flex justify-between items-center mb-8 px-2">
+            <header class="flex justify-between items-start mb-8 px-2">
                 <div>
-                    <h1 class="text-xl font-bold text-slate-800" id="welcome-msg">こんにちは</h1>
+                    <div class="flex items-center gap-3">
+                        <h1 class="text-xl font-bold text-slate-800" id="welcome-msg">こんにちは</h1>
+                        <button id="pw-change-btn" onclick="openPasswordModal()" class="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded hover:bg-slate-200 transition-colors font-bold uppercase tracking-tight hidden">
+                            パスワード変更
+                        </button>
+                    </div>
                     <div id="role-badge" class="inline-block px-2 py-0.5 bg-indigo-50 text-indigo-500 rounded text-[9px] font-bold uppercase tracking-wider mt-1"></div>
                 </div>
                 <button onclick="handleLogout()" class="px-4 py-2 bg-white text-slate-400 hover:text-rose-500 border border-slate-100 rounded-xl text-xs font-bold transition-all shadow-sm">
@@ -194,7 +199,6 @@
                 </button>
             </header>
 
-            <!-- ユーザー画面 -->
             <section id="user-view" class="hidden space-y-8">
                 <div class="space-y-3">
                     <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-2">よく使うルート</h3>
@@ -211,16 +215,6 @@
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-400 uppercase mb-2">件名 / 目的</label>
                                 <input type="text" id="subject" required class="w-full px-4 py-3 input-elegant" placeholder="例:第1回執行委員会">
-                            </div>
-                        </div>
-
-                        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                            <h3 class="text-[11px] font-bold text-slate-400 uppercase mb-4 flex items-center gap-2">振込先情報</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input type="text" id="bank-name" placeholder="銀行名" required class="px-4 py-2.5 input-elegant text-sm">
-                                <input type="text" id="branch-name" placeholder="支店名" required class="px-4 py-2.5 input-elegant text-sm">
-                                <input type="text" id="account-number" placeholder="口座番号" required class="px-4 py-2.5 input-elegant text-sm">
-                                <input type="text" id="account-holder" placeholder="口座名義（カナ）" required class="px-4 py-2.5 input-elegant text-sm">
                             </div>
                         </div>
 
@@ -243,7 +237,7 @@
                                             <input type="checkbox" id="round-trip" onchange="calculateAmount()" class="w-4 h-4 rounded text-indigo-600">
                                         </label>
                                     </div>
-                                    <input id="unit-price" placeholder="0" required oninput="calculateAmount()" class="w-full bg-transparent text-3xl font-bold text-indigo-600 border-none text-center focus:outline-none">
+                                    <input type="number" id="unit-price" placeholder="0" required oninput="calculateAmount()" class="w-full bg-transparent text-3xl font-bold text-indigo-600 border-none text-center focus:outline-none">
                                     <div class="mt-4 pt-4 border-t border-slate-200 flex justify-between">
                                         <span class="text-xs font-bold text-slate-400">合計</span>
                                         <span class="text-xl font-bold text-slate-700" id="total-display">¥ 0</span>
@@ -258,9 +252,8 @@
                 <div class="soft-card overflow-hidden">
                     <div class="px-4 md:px-8 py-4 bg-slate-50/50 border-b border-slate-50 flex justify-between items-center">
                         <h2 class="text-sm font-bold text-slate-600">申請履歴</h2>
-                        <span class="text-[9px] md:text-[10px] text-slate-400 font-medium">※受理前のみ取り消し可能</span>
                     </div>
-                    <div class="p-4 md:p-0">
+                    <div class="p-4 md:p-0 overflow-x-auto">
                         <table class="w-full text-left responsive-table">
                             <thead class="text-[10px] font-bold text-slate-400 uppercase bg-slate-50/30">
                                 <tr>
@@ -278,7 +271,7 @@
                 </div>
             </section>
 
-            <!-- 管理者画面 -->
+            <!-- Admin View -->
             <section id="admin-view" class="hidden space-y-8">
                 <div class="flex gap-2 p-1 bg-slate-100 rounded-xl w-fit">
                     <button onclick="switchAdminTab('requests')" id="admin-tab-req" class="px-6 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm flex items-center">
@@ -296,15 +289,10 @@
                         <h2 class="text-lg font-bold text-slate-700">精算管理パネル</h2>
                         <button onclick="exportToCSV()" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-4 py-2 rounded-lg">CSV出力</button>
                     </div>
-                    <div class="p-4 md:p-8">
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                            <input type="date" id="filter-start" oninput="renderAdminList()" class="px-4 py-2 text-sm input-elegant">
-                            <input type="date" id="filter-end" oninput="renderAdminList()" class="px-4 py-2 text-sm input-elegant">
-                            <input type="text" id="filter-keyword" oninput="renderAdminList()" placeholder="件名で検索..." class="px-4 py-2 text-sm input-elegant">
-                        </div>
+                    <div class="p-0 md:p-0">
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm responsive-table">
-                                <thead class="text-[10px] font-bold text-slate-400 uppercase border-b">
+                                <thead class="text-[10px] font-bold text-slate-400 uppercase border-b bg-slate-50/50">
                                     <tr>
                                         <th class="px-4 py-4 text-left">管理番号</th>
                                         <th class="px-4 py-4 text-left">申請者</th>
@@ -321,10 +309,9 @@
                     </div>
                 </div>
 
-                <!-- ユーザー管理パネル -->
                 <div id="admin-users-panel" class="hidden soft-card overflow-hidden">
                     <div class="p-8 border-b border-slate-50"><h2 class="text-lg font-bold text-slate-700">ユーザー管理</h2></div>
-                    <div class="p-4 md:p-0">
+                    <div class="p-0 md:p-0 overflow-x-auto">
                         <table class="w-full text-sm responsive-table">
                             <thead class="text-[10px] font-bold text-slate-400 uppercase bg-slate-50/50">
                                 <tr>
@@ -342,35 +329,34 @@
         </div>
     </div>
 
-    <!-- モーダル（詳細用） -->
+    <!-- Modals -->
     <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden fade-in">
             <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-700">申請詳細</h3>
                 <button onclick="closeModal('detail-modal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
             </div>
-            <div id="modal-content" class="p-8 space-y-6 max-h-[70vh] overflow-y-auto"></div>
+            <div id="modal-content" class="p-8 space-y-6"></div>
             <div class="px-8 py-6 border-t flex justify-end">
                 <button onclick="closeModal('detail-modal')" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">閉じる</button>
             </div>
         </div>
     </div>
 
-    <!-- 削除確認モーダル -->
-    <div id="delete-confirm-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 modal-overlay">
+    <div id="pw-change-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden fade-in">
-            <div class="p-8 text-center space-y-4">
-                <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-slate-800">申請を削除しますか？</h3>
-                <p class="text-sm text-slate-400">この操作は取り消せません。管理番号 <span id="delete-mgmt-id" class="font-bold text-indigo-500"></span> の申請データを完全に削除します。</p>
+            <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-700">パスワード変更</h3>
+                <button onclick="closeModal('pw-change-modal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
             </div>
-            <div class="grid grid-cols-2 border-t">
-                <button onclick="closeModal('delete-confirm-modal')" class="py-4 text-sm font-bold text-slate-400 hover:bg-slate-50 border-r">キャンセル</button>
-                <button id="confirm-delete-btn" class="py-4 text-sm font-bold text-rose-500 hover:bg-rose-50">削除する</button>
+            <div class="p-8 space-y-4">
+                <input type="password" id="old-pw" autocomplete="current-password" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="現在のパスワード">
+                <input type="password" id="new-pw" autocomplete="new-password" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="新しいパスワード">
+                <input type="password" id="new-pw-confirm" autocomplete="new-password" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="確認用入力">
+            </div>
+            <div class="px-8 py-6 border-t grid grid-cols-2 gap-3">
+                <button onclick="closeModal('pw-change-modal')" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">戻る</button>
+                <button onclick="handlePasswordChange()" class="px-6 py-2 btn-primary font-bold rounded-xl text-sm">変更</button>
             </div>
         </div>
     </div>
@@ -382,34 +368,15 @@
         let currentUser = null;
         let requests = JSON.parse(localStorage.getItem('transport_requests_v4')) || [];
         let users = JSON.parse(localStorage.getItem('transport_users_v4')) || [];
-        let savedBankInfo = JSON.parse(localStorage.getItem('bank_info_v4')) || {};
         let userFavorites = JSON.parse(localStorage.getItem('user_favorites_v4')) || {};
-        
-        // 削除対象の保持用
-        let pendingDeleteId = null;
 
         function generateManagementId() {
             const now = new Date();
             let year = now.getFullYear();
             if (now.getMonth() < 3) year -= 1;
             const yearStr = String(year).slice(-2);
-            const sameYearPrefix = `${yearStr}-`;
-            const countInYear = requests.filter(r => r.mgmtId && r.mgmtId.startsWith(sameYearPrefix)).length;
-            const serial = String(countInYear + 1).padStart(3, '0');
-            return `${yearStr}-${serial}`;
-        }
-
-        function updateIdDatalist() {
-            const list = document.getElementById('id-list');
-            list.innerHTML = '';
-            const optionAdmin = document.createElement('option');
-            optionAdmin.value = ADMIN_ID;
-            list.appendChild(optionAdmin);
-            users.forEach(u => {
-                const option = document.createElement('option');
-                option.value = u.email;
-                list.appendChild(option);
-            });
+            const countInYear = requests.filter(r => r.mgmtId && r.mgmtId.startsWith(yearStr)).length;
+            return `${yearStr}-${String(countInYear + 1).padStart(3, '0')}`;
         }
 
         function switchAuthTab(type) {
@@ -425,11 +392,10 @@
             const email = document.getElementById('reg-id').value;
             const pw = document.getElementById('reg-pw').value;
             if (!name || !email || !pw) return showToast('入力を完了してください', 'error');
-            if (users.some(u => u.email === email) || email === ADMIN_ID) return showToast('既に使用されています', 'error');
+            if (users.some(u => u.email === email) || email === ADMIN_ID) return showToast('既に登録されているか、管理者用アドレスです', 'error');
             users.push({ name, email, password: pw, status: '承認待ち' });
-            saveUsers();
+            localStorage.setItem('transport_users_v4', JSON.stringify(users));
             showToast('利用申請を送りました');
-            updateIdDatalist();
             switchAuthTab('login');
         }
 
@@ -442,8 +408,8 @@
             }
             const user = users.find(u => u.email === id && u.password === pw);
             if (user) {
-                if (user.status === '承認待ち') return showToast('アカウント承認をお待ちください', 'error');
-                if (user.status === '却下') return showToast('利用申請が承認されませんでした', 'error');
+                if (user.status === '承認待ち') return showToast('管理者の承認をお待ちください', 'error');
+                if (user.status === '却下') return showToast('承認が却下されました', 'error');
                 currentUser = { id: user.email, name: user.name, role: 'user' };
                 initApp();
             } else {
@@ -456,6 +422,10 @@
             document.getElementById('main-content').classList.remove('hidden');
             document.getElementById('welcome-msg').innerText = `${currentUser.name} 様`;
             document.getElementById('role-badge').innerText = currentUser.role === 'admin' ? 'Administrator' : 'General User';
+            
+            const pwBtn = document.getElementById('pw-change-btn');
+            if (currentUser.id !== ADMIN_ID) pwBtn.classList.remove('hidden');
+
             if (currentUser.role === 'admin') {
                 document.getElementById('admin-view').classList.remove('hidden');
                 document.getElementById('user-view').classList.add('hidden');
@@ -465,98 +435,117 @@
             } else {
                 document.getElementById('user-view').classList.remove('hidden');
                 document.getElementById('admin-view').classList.add('hidden');
-                autoFillBank();
                 renderUserList();
                 renderFavorites();
             }
         }
 
-        function cancelRequest(id) {
-            if (!confirm('この申請を取り消しますか？')) return;
-            const index = requests.findIndex(r => r.id === id);
-            if (index !== -1 && requests[index].status === '申請中') {
-                requests.splice(index, 1);
-                localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
-                renderUserList();
-                showToast('申請を取り消しました');
-            }
+        function openPasswordModal() {
+            document.getElementById('old-pw').value = '';
+            document.getElementById('new-pw').value = '';
+            document.getElementById('new-pw-confirm').value = '';
+            document.getElementById('pw-change-modal').classList.remove('hidden');
         }
+
+        function handlePasswordChange() {
+            const oldPw = document.getElementById('old-pw').value;
+            const newPw = document.getElementById('new-pw').value;
+            const confirmPw = document.getElementById('new-pw-confirm').value;
+            const userIdx = users.findIndex(u => u.email === currentUser.id);
+            if (userIdx === -1) return;
+            if (users[userIdx].password !== oldPw) return showToast('現在のパスワードが違います', 'error');
+            if (!newPw || newPw !== confirmPw) return showToast('新パスワードが一致しません', 'error');
+            users[userIdx].password = newPw;
+            localStorage.setItem('transport_users_v4', JSON.stringify(users));
+            closeModal('pw-change-modal');
+            showToast('更新しました');
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('main-content').classList.add('hidden');
+        }
+
+        document.getElementById('expense-form').onsubmit = function(e) {
+            e.preventDefault();
+            const newReq = {
+                id: Date.now(),
+                mgmtId: generateManagementId(),
+                userId: currentUser.id,
+                userName: currentUser.name,
+                date: document.getElementById('date').value,
+                subject: document.getElementById('subject').value,
+                from: document.getElementById('from-station').value,
+                to: document.getElementById('to-station').value,
+                totalPrice: calculateAmount(),
+                status: '申請中'
+            };
+            requests.unshift(newReq);
+            localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
+            renderUserList();
+            this.reset();
+            calculateAmount();
+            showToast('申請を完了しました');
+        };
 
         function renderUserList() {
             const list = document.getElementById('user-request-list');
             const userReqs = requests.filter(r => r.userId === currentUser.id);
-            if (userReqs.length === 0) {
-                list.innerHTML = '<tr><td colspan="6" class="px-8 py-10 text-center text-slate-300 text-xs italic">申請データがありません</td></tr>';
-                return;
-            }
-            list.innerHTML = userReqs.map(r => `
+            list.innerHTML = userReqs.length ? userReqs.map(r => `
                 <tr class="hover:bg-slate-50 transition-all">
-                    <td data-label="ID" class="px-8 py-5 text-[10px] font-bold text-indigo-500">#${r.mgmtId || '---'}</td>
-                    <td data-label="日付" class="px-8 py-5 text-xs text-slate-500 font-medium">${r.date}</td>
-                    <td data-label="件名" class="px-8 py-5 text-sm font-bold text-slate-700">${r.subject}</td>
-                    <td data-label="金額" class="px-8 py-5 text-right text-sm font-bold text-indigo-600 whitespace-nowrap">¥ ${r.totalPrice.toLocaleString()}</td>
+                    <td data-label="ID" class="px-8 py-5 text-[10px] font-bold text-indigo-500">#${r.mgmtId}</td>
+                    <td data-label="日付" class="px-8 py-5 text-xs text-slate-500">${r.date}</td>
+                    <td data-label="件名" class="px-8 py-5 text-sm font-bold text-slate-700 col-subject">${r.subject}</td>
+                    <td data-label="金額" class="px-8 py-5 text-right text-sm font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</td>
                     <td data-label="状態" class="px-8 py-5 text-center">
                         <span class="status-badge ${r.status === '受理' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}">${r.status}</span>
                     </td>
                     <td data-label="操作" class="px-8 py-5 text-right">
-                        ${r.status === '申請中' ? `<button onclick="cancelRequest(${r.id})" class="text-[10px] font-bold text-rose-400 hover:text-rose-600">取り消す</button>` : '-'}
+                        ${r.status === '申請中' ? `<button onclick="cancelRequest(${r.id})" class="text-[10px] text-rose-400 font-bold">取消</button>` : '-'}
                     </td>
                 </tr>
-            `).join('');
+            `).join('') : '<tr><td colspan="6" class="p-10 text-center text-slate-300 italic text-xs">データなし</td></tr>';
+        }
+
+        function cancelRequest(id) {
+            if (!confirm('取り消しますか？')) return;
+            requests = requests.filter(r => r.id !== id);
+            localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
+            renderUserList();
         }
 
         function renderAdminList() {
             const list = document.getElementById('admin-request-list');
-            const keyword = document.getElementById('filter-keyword').value.toLowerCase();
-            const start = document.getElementById('filter-start').value;
-            const end = document.getElementById('filter-end').value;
-            const filtered = requests.filter(r => {
-                const matchesDate = (!start || r.date >= start) && (!end || r.date <= end);
-                const matchesText = !keyword || r.subject.toLowerCase().includes(keyword);
-                return matchesDate && matchesText;
-            });
-            list.innerHTML = filtered.map(r => `
-                <tr class="hover:bg-slate-50/50">
-                    <td data-label="ID" class="px-4 py-5">
-                        <button onclick="openDetail(${r.id})" class="text-[11px] font-bold text-indigo-600 hover:underline">#${r.mgmtId || '---'}</button>
-                    </td>
-                    <td data-label="申請者" class="px-4 py-5 font-bold text-slate-700 text-xs md:text-sm">${r.userName}</td>
+            list.innerHTML = requests.map(r => `
+                <tr class="hover:bg-slate-50">
+                    <td data-label="ID" class="px-4 py-5"><button onclick="openDetail(${r.id})" class="text-[11px] font-bold text-indigo-600 hover:underline">#${r.mgmtId}</button></td>
+                    <td data-label="申請者" class="px-4 py-5 font-bold text-slate-700 text-xs">${r.userName}</td>
                     <td data-label="日付" class="px-4 py-5 text-xs text-slate-500">${r.date}</td>
-                    <td data-label="件名" class="px-4 py-5 text-xs text-slate-600 truncate max-w-[120px]">${r.subject}</td>
-                    <td data-label="金額" class="px-4 py-5 text-right font-bold text-indigo-600 whitespace-nowrap">¥ ${r.totalPrice.toLocaleString()}</td>
+                    <td data-label="件名" class="px-4 py-5 text-xs text-slate-600 col-subject">${r.subject}</td>
+                    <td data-label="金額" class="px-4 py-5 text-right font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</td>
                     <td data-label="状態" class="px-4 py-5 text-center">
                         <span class="status-badge ${r.status === '受理' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}">${r.status}</span>
                     </td>
-                    <td data-label="操作" class="px-4 py-5 text-right flex flex-col md:flex-row items-end md:items-center justify-end gap-2">
-                        ${r.status === '申請中' ? `<button onclick="approveRequest(${r.id})" class="text-[11px] font-bold text-white bg-indigo-600 px-3 py-1.5 rounded-lg whitespace-nowrap">承認</button>` : ''}
-                        <button onclick="openDeleteConfirm(${r.id})" class="text-[11px] font-bold text-rose-400 hover:text-rose-600 px-2 py-1.5 whitespace-nowrap">削除</button>
+                    <td data-label="操作" class="px-4 py-5 text-right">
+                        ${r.status === '申請中' ? `<button onclick="approveRequest(${r.id})" class="bg-indigo-600 text-white text-[10px] px-3 py-1.5 rounded-lg font-bold">承認</button>` : ''}
+                        <button onclick="deleteRequest(${r.id})" class="text-rose-400 text-[10px] ml-2 font-bold">削除</button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        // 申請削除（管理者用）
-        function openDeleteConfirm(id) {
-            const r = requests.find(req => req.id === id);
-            if (!r) return;
-            pendingDeleteId = id;
-            document.getElementById('delete-mgmt-id').innerText = `#${r.mgmtId || '---'}`;
-            document.getElementById('delete-confirm-modal').classList.remove('hidden');
+        function approveRequest(id) {
+            const req = requests.find(r => r.id === id);
+            if (req) { req.status = '受理'; localStorage.setItem('transport_requests_v4', JSON.stringify(requests)); renderAdminList(); updateBadges(); showToast('受理しました'); }
         }
 
-        document.getElementById('confirm-delete-btn').onclick = function() {
-            if (pendingDeleteId) {
-                const index = requests.findIndex(r => r.id === pendingDeleteId);
-                if (index !== -1) {
-                    requests.splice(index, 1);
-                    localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
-                    renderAdminList();
-                    updateBadges();
-                    showToast('申請を削除しました');
-                }
-            }
-            closeModal('delete-confirm-modal');
-        };
+        function deleteRequest(id) {
+            if (!confirm('削除しますか？')) return;
+            requests = requests.filter(r => r.id !== id);
+            localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
+            renderAdminList(); updateBadges();
+        }
 
         function renderUserManagement() {
             const list = document.getElementById('admin-user-list');
@@ -567,29 +556,71 @@
                     <td data-label="状態" class="px-8 py-5">
                         <span class="status-badge ${u.status === '承認済み' ? 'bg-emerald-50 text-emerald-500' : u.status === '却下' ? 'bg-rose-50 text-rose-500' : 'bg-amber-50 text-amber-500'}">${u.status}</span>
                     </td>
-                    <td data-label="操作" class="px-8 py-5 text-right space-x-2">
+                    <td data-label="操作" class="px-8 py-5 text-right">
                         ${u.status === '承認待ち' ? `
                             <button onclick="setUserStatus('${u.email}', '承認済み')" class="text-xs font-bold text-emerald-600">承認</button>
-                            <span class="text-slate-200">|</span>
-                            <button onclick="setUserStatus('${u.email}', '却下')" class="text-xs font-bold text-rose-400">却下</button>
+                            <button onclick="setUserStatus('${u.email}', '却下')" class="text-xs font-bold text-rose-400 ml-2">却下</button>
                         ` : `<button onclick="deleteUser('${u.email}')" class="text-xs font-bold text-slate-400 hover:text-rose-500">削除</button>`}
                     </td>
                 </tr>
             `).join('');
         }
 
-        // お気に入り・補助機能
+        function setUserStatus(email, status) {
+            const uIdx = users.findIndex(u => u.email === email);
+            if (uIdx !== -1) { users[uIdx].status = status; localStorage.setItem('transport_users_v4', JSON.stringify(users)); renderUserManagement(); updateBadges(); }
+        }
+
+        function deleteUser(email) {
+            if (!confirm('削除しますか？')) return;
+            users = users.filter(u => u.email !== email);
+            localStorage.setItem('transport_users_v4', JSON.stringify(users));
+            renderUserManagement();
+        }
+
+        function openDetail(id) {
+            const r = requests.find(req => req.id === id);
+            if (!r) return;
+            document.getElementById('modal-content').innerHTML = `
+                <div class="space-y-4 text-left">
+                    <p class="text-xs font-bold text-indigo-600">管理番号: #${r.mgmtId}</p>
+                    <div class="bg-slate-50 p-4 rounded-xl">
+                        <p class="text-[9px] text-slate-400 font-bold uppercase">申請者 / 日付</p>
+                        <p class="text-sm font-bold text-slate-700">${r.userName} / ${r.date}</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl">
+                        <p class="text-[9px] text-slate-400 font-bold uppercase">ルート</p>
+                        <p class="text-sm font-bold text-slate-700">${r.from} ⇄ ${r.to}</p>
+                        <p class="text-xs text-slate-500 mt-1">目的: ${r.subject}</p>
+                    </div>
+                    <div class="bg-indigo-50 p-4 rounded-xl flex justify-between items-center">
+                        <span class="text-xs font-bold text-indigo-400">合計</span>
+                        <span class="text-xl font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function calculateAmount() {
+            const price = parseInt(document.getElementById('unit-price').value) || 0;
+            const total = document.getElementById('round-trip').checked ? price * 2 : price;
+            document.getElementById('total-display').innerText = `¥ ${total.toLocaleString()}`;
+            return total;
+        }
+
         function saveAsFavorite() {
             const from = document.getElementById('from-station').value;
             const to = document.getElementById('to-station').value;
             const unit = document.getElementById('unit-price').value;
             const round = document.getElementById('round-trip').checked;
-            if (!from || !to || !unit) return showToast('入力を完了してください', 'error');
+            if (!from || !to || !unit) return;
             if (!userFavorites[currentUser.id]) userFavorites[currentUser.id] = [];
             userFavorites[currentUser.id].push({ from, to, unit, round });
             localStorage.setItem('user_favorites_v4', JSON.stringify(userFavorites));
             renderFavorites();
-            showToast('お気に入りに登録しました');
         }
 
         function renderFavorites() {
@@ -619,89 +650,6 @@
             renderFavorites();
         }
 
-        function calculateAmount() {
-            const price = parseInt(document.getElementById('unit-price').value) || 0;
-            const total = document.getElementById('round-trip').checked ? price * 2 : price;
-            document.getElementById('total-display').innerText = `¥ ${total.toLocaleString()}`;
-            return total;
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            document.getElementById('auth-screen').classList.remove('hidden');
-            document.getElementById('main-content').classList.add('hidden');
-        }
-
-        function autoFillBank() {
-            if (savedBankInfo.bankName) {
-                document.getElementById('bank-name').value = savedBankInfo.bankName;
-                document.getElementById('branch-name').value = savedBankInfo.branchName;
-                document.getElementById('account-number').value = savedBankInfo.accountNumber;
-                document.getElementById('account-holder').value = savedBankInfo.accountHolder;
-            }
-        }
-
-        document.getElementById('expense-form').onsubmit = function(e) {
-            e.preventDefault();
-            const bankData = {
-                bankName: document.getElementById('bank-name').value,
-                branchName: document.getElementById('branch-name').value,
-                accountNumber: document.getElementById('account-number').value,
-                accountHolder: document.getElementById('account-holder').value
-            };
-            localStorage.setItem('bank_info_v4', JSON.stringify(bankData));
-            savedBankInfo = bankData;
-
-            const newReq = {
-                id: Date.now(),
-                mgmtId: generateManagementId(),
-                userId: currentUser.id,
-                userName: currentUser.name,
-                date: document.getElementById('date').value,
-                subject: document.getElementById('subject').value,
-                from: document.getElementById('from-station').value,
-                to: document.getElementById('to-station').value,
-                totalPrice: calculateAmount(),
-                isRoundTrip: document.getElementById('round-trip').checked,
-                bank: bankData,
-                status: '申請中'
-            };
-            requests.unshift(newReq);
-            localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
-            renderUserList();
-            this.reset();
-            calculateAmount();
-            autoFillBank();
-            showToast('申請を送信しました');
-        };
-
-        function openDetail(id) {
-            const r = requests.find(req => req.id === id);
-            if (!r) return;
-            document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-4 text-left">
-                    <p class="text-xs font-bold text-indigo-600">管理番号: #${r.mgmtId}</p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-slate-50 p-3 rounded-xl"><p class="text-[9px] text-slate-400 font-bold">申請者</p><p class="text-sm font-bold">${r.userName}</p></div>
-                        <div class="bg-slate-50 p-3 rounded-xl"><p class="text-[9px] text-slate-400 font-bold">日付</p><p class="text-sm font-bold">${r.date}</p></div>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-xl"><p class="text-[9px] text-slate-400 font-bold">目的・ルート</p><p class="text-sm font-bold">${r.subject}</p><p class="text-[10px] text-slate-500">${r.from} → ${r.to}</p></div>
-                    <div class="bg-indigo-50 p-3 rounded-xl flex justify-between"><span class="text-xs font-bold text-indigo-400">合計金額</span><span class="text-lg font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</span></div>
-                </div>
-            `;
-            document.getElementById('detail-modal').classList.remove('hidden');
-        }
-
-        function closeModal(id) { 
-            document.getElementById(id).classList.add('hidden'); 
-            if (id === 'delete-confirm-modal') pendingDeleteId = null;
-        }
-
-        function approveRequest(id) {
-            const req = requests.find(r => r.id === id);
-            if (req) { req.status = '受理'; localStorage.setItem('transport_requests_v4', JSON.stringify(requests)); renderAdminList(); updateBadges(); showToast('承認しました'); }
-        }
-
         function updateBadges() {
             const uCount = users.filter(u => u.status === '承認待ち').length;
             document.getElementById('unapproved-count-badge').innerText = uCount;
@@ -709,25 +657,6 @@
             const rCount = requests.filter(r => r.status === '申請中').length;
             document.getElementById('unprocessed-req-badge').innerText = rCount;
             document.getElementById('unprocessed-req-badge').classList.toggle('hidden', rCount === 0);
-        }
-
-        function setUserStatus(email, status) {
-            const uIdx = users.findIndex(u => u.email === email);
-            if (uIdx !== -1) { users[uIdx].status = status; saveUsers(); renderUserManagement(); updateBadges(); }
-        }
-
-        function deleteUser(email) {
-            if (confirm('ユーザーを削除しますか？関連する申請データは残ります。')) { users = users.filter(u => u.email !== email); saveUsers(); renderUserManagement(); updateIdDatalist(); }
-        }
-
-        function saveUsers() { localStorage.setItem('transport_users_v4', JSON.stringify(users)); }
-
-        function showToast(msg, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl shadow-xl z-[100] text-sm font-bold border ${type === 'success' ? 'bg-white text-indigo-600 border-indigo-100' : 'bg-rose-50 text-rose-600 border-rose-100'} fade-in`;
-            toast.innerText = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
         }
 
         function switchAdminTab(type) {
@@ -738,13 +667,21 @@
             document.getElementById('admin-tab-users').className = !isReq ? "px-6 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm flex items-center" : "px-6 py-2 text-sm font-bold text-slate-500 rounded-lg flex items-center";
         }
 
+        function showToast(msg, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl shadow-xl z-[100] text-sm font-bold border ${type === 'success' ? 'bg-white text-indigo-600 border-indigo-100' : 'bg-rose-50 text-rose-600 border-rose-100'} fade-in`;
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
         function exportToCSV() {
             const csv = [["ID","日付","氏名","件名","金額","状態"], ...requests.map(r => [r.mgmtId, r.date, r.userName, `"${r.subject}"`, r.totalPrice, r.status])].map(e => e.join(",")).join("\n");
             const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv' });
-            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `expenses.csv`; a.click();
+            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `seisan_list.csv`; a.click();
         }
 
-        window.onload = function() { document.getElementById('date').valueAsDate = new Date(); updateIdDatalist(); };
+        window.onload = function() { document.getElementById('date').valueAsDate = new Date(); };
     </script>
 </body>
 </html>
