@@ -197,7 +197,7 @@
                 <datalist id="id-list"></datalist>
                 <input type="password" id="login-pw" name="password" autocomplete="current-password" class="w-full px-4 py-3.5 input-elegant" placeholder="Password">
                 <button type="submit" class="w-full btn-primary py-4 rounded-xl font-bold mt-2">ログインする</button>
-                <p class="text-center text-[10px] text-slate-300 font-bold tracking-widest mt-4">Ver 1.1.1</p>
+                <p class="text-center text-[10px] text-slate-300 font-bold tracking-widest mt-4">Ver 1.1.0</p>
             </form>
 
             <form id="register-form" class="hidden space-y-5" onsubmit="event.preventDefault(); handleRegister();">
@@ -377,22 +377,39 @@
                 <h3 class="font-bold text-slate-700">登録情報変更</h3>
                 <button onclick="closeModal('profile-edit-modal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
             </div>
+            
+            <!-- Tabs for Admin -->
+            <div id="profile-tabs" class="flex p-1 bg-slate-100 mx-8 mt-6 rounded-xl hidden">
+                <button onclick="switchProfileTab('id')" id="tab-prof-id" class="flex-1 py-2 text-[11px] font-bold bg-white text-indigo-600 rounded-lg shadow-sm">ID変更</button>
+                <button onclick="switchProfileTab('pw')" id="tab-prof-pw" class="flex-1 py-2 text-[11px] font-bold text-slate-500 rounded-lg">パスワード変更</button>
+            </div>
+
             <div class="p-8 space-y-4">
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1">現在のID (Email)</label>
-                    <input type="text" id="edit-id" autocomplete="username" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="ID / Email">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1">現在のパスワード</label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1">現在のパスワード（必須）</label>
                     <input type="password" id="old-pw" autocomplete="current-password" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="現在のパスワード">
                 </div>
+                
                 <hr class="border-slate-100">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1 text-indigo-500">新しいパスワード (変更する場合のみ)</label>
-                    <input type="password" id="new-pw" autocomplete="new-password" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="新しいパスワード">
-                    <input type="password" id="new-pw-confirm" autocomplete="new-password" class="w-full px-4 py-2.5 mt-2 input-elegant text-sm" placeholder="確認用入力">
+
+                <!-- ID Change Fields -->
+                <div id="field-group-id" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1">新しいID (Email)</label>
+                        <input type="text" id="edit-id" autocomplete="username" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="新しいID / Email">
+                    </div>
+                </div>
+
+                <!-- Password Change Fields -->
+                <div id="field-group-pw" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1 text-indigo-500">新しいパスワード</label>
+                        <input type="password" id="new-pw" autocomplete="new-password" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="新しいパスワード">
+                        <input type="password" id="new-pw-confirm" autocomplete="new-password" class="w-full px-4 py-2.5 mt-2 input-elegant text-sm" placeholder="確認用入力">
+                    </div>
                 </div>
             </div>
+
             <div class="px-8 py-6 border-t grid grid-cols-2 gap-3">
                 <button onclick="closeModal('profile-edit-modal')" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">戻る</button>
                 <button onclick="handleProfileUpdate()" class="px-6 py-2 btn-primary font-bold rounded-xl text-sm">更新する</button>
@@ -480,20 +497,31 @@
             }
         }
 
+        function switchProfileTab(type) {
+            const isId = type === 'id';
+            document.getElementById('field-group-id').classList.toggle('hidden', !isId);
+            document.getElementById('field-group-pw').classList.toggle('hidden', isId);
+            document.getElementById('tab-prof-id').className = isId ? "flex-1 py-2 text-[11px] font-bold bg-white text-indigo-600 rounded-lg shadow-sm" : "flex-1 py-2 text-[11px] font-bold text-slate-500 rounded-lg";
+            document.getElementById('tab-prof-pw').className = !isId ? "flex-1 py-2 text-[11px] font-bold bg-white text-indigo-600 rounded-lg shadow-sm" : "flex-1 py-2 text-[11px] font-bold text-slate-500 rounded-lg";
+        }
+
         function openProfileEditModal() {
-            const editIdInput = document.getElementById('edit-id');
-            editIdInput.value = currentUser.id;
-            
-            // 一般ユーザーはID変更不可、管理者は変更可能
-            if (currentUser.role === 'admin') {
-                editIdInput.readOnly = false;
-            } else {
-                editIdInput.readOnly = true;
-            }
-            
+            document.getElementById('edit-id').value = currentUser.id;
             document.getElementById('old-pw').value = '';
             document.getElementById('new-pw').value = '';
             document.getElementById('new-pw-confirm').value = '';
+            
+            const tabs = document.getElementById('profile-tabs');
+            if (currentUser.role === 'admin') {
+                tabs.classList.remove('hidden');
+                switchProfileTab('id');
+            } else {
+                tabs.classList.add('hidden');
+                switchProfileTab('pw'); // 一般ユーザーはパスワード変更のみ表示
+                document.getElementById('field-group-id').classList.add('hidden'); // ID変更フィールドを隠す
+                document.getElementById('field-group-pw').classList.remove('hidden');
+            }
+            
             document.getElementById('profile-edit-modal').classList.remove('hidden');
         }
 
@@ -503,49 +531,38 @@
             const newPw = document.getElementById('new-pw').value;
             const confirmPw = document.getElementById('new-pw-confirm').value;
 
-            if (!newId || !oldPw) return showToast('IDと現在のパスワードは必須です', 'error');
+            if (!oldPw) return showToast('現在のパスワードを入力してください', 'error');
 
             if (currentUser.role === 'admin') {
                 // Admin Update Logic
                 if (oldPw !== adminAuth.pw) return showToast('現在のパスワードが違います', 'error');
-                if (newPw && newPw !== confirmPw) return showToast('新しいパスワードが一致しません', 'error');
                 
-                adminAuth.id = newId;
-                if (newPw) adminAuth.pw = newPw;
+                const isIdTab = !document.getElementById('field-group-id').classList.contains('hidden');
+                
+                if (isIdTab) {
+                    if (!newId) return showToast('IDを入力してください', 'error');
+                    adminAuth.id = newId;
+                    currentUser.id = newId;
+                    showToast('管理者のIDを更新しました');
+                } else {
+                    if (!newPw) return showToast('新しいパスワードを入力してください', 'error');
+                    if (newPw !== confirmPw) return showToast('パスワードが一致しません', 'error');
+                    adminAuth.pw = newPw;
+                    showToast('管理者のパスワードを更新しました');
+                }
                 
                 localStorage.setItem('admin_auth_v4', JSON.stringify(adminAuth));
-                currentUser.id = newId;
-                showToast('管理者の設定を更新しました');
             } else {
                 // General User Update Logic
                 const uIdx = users.findIndex(u => u.email === currentUser.id);
                 if (uIdx === -1) return;
                 if (users[uIdx].password !== oldPw) return showToast('現在のパスワードが違います', 'error');
-                if (newPw && newPw !== confirmPw) return showToast('新しいパスワードが一致しません', 'error');
+                if (!newPw) return showToast('新しいパスワードを入力してください', 'error');
+                if (newPw !== confirmPw) return showToast('パスワードが一致しません', 'error');
                 
-                // General user cannot change ID normally, but logic preserved for security check
-                if (newId !== currentUser.id && (users.some(u => u.email === newId) || newId === adminAuth.id)) {
-                    return showToast('そのIDは既に使用されています', 'error');
-                }
-
-                users[uIdx].email = newId;
-                if (newPw) users[uIdx].password = newPw;
-                
-                // Update history if ID changed (though it shouldn't for general users now)
-                if (newId !== currentUser.id) {
-                    requests.forEach(r => { if (r.userId === currentUser.id) r.userId = newId; });
-                    localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
-                    
-                    if (userFavorites[currentUser.id]) {
-                        userFavorites[newId] = userFavorites[currentUser.id];
-                        delete userFavorites[currentUser.id];
-                        localStorage.setItem('user_favorites_v4', JSON.stringify(userFavorites));
-                    }
-                }
-
+                users[uIdx].password = newPw;
                 localStorage.setItem('transport_users_v4', JSON.stringify(users));
-                currentUser.id = newId;
-                showToast('プロフィールを更新しました');
+                showToast('パスワードを更新しました');
             }
             
             closeModal('profile-edit-modal');
