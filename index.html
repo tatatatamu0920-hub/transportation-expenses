@@ -107,6 +107,14 @@
             box-shadow: 0 0 0 4px rgba(94, 106, 210, 0.1);
         }
 
+        /* Readonly style */
+        .input-elegant:read-only {
+            background: #eef1f6;
+            color: #94a3b8;
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+
         .btn-primary {
             background: linear-gradient(135deg, #6e7be3 0%, #5e6ad2 100%);
             color: white;
@@ -163,7 +171,7 @@
         <!-- Auth Screen -->
         <div id="auth-screen" class="max-w-md mx-auto mt-12 soft-card p-8 md:p-10 fade-in">
             <div class="text-center mb-8">
-                <!-- シンプルな電車のアイコンに変更 -->
+                <!-- シンプルな電車のアイコン -->
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="4" y="3" width="16" height="15" rx="2"></rect>
@@ -189,7 +197,7 @@
                 <datalist id="id-list"></datalist>
                 <input type="password" id="login-pw" name="password" autocomplete="current-password" class="w-full px-4 py-3.5 input-elegant" placeholder="Password">
                 <button type="submit" class="w-full btn-primary py-4 rounded-xl font-bold mt-2">ログインする</button>
-                <p class="text-center text-[10px] text-slate-300 font-bold tracking-widest mt-4">Ver 1.1.0</p>
+                <p class="text-center text-[10px] text-slate-300 font-bold tracking-widest mt-4">Ver 1.1.1</p>
             </form>
 
             <form id="register-form" class="hidden space-y-5" onsubmit="event.preventDefault(); handleRegister();">
@@ -362,7 +370,7 @@
         </div>
     </div>
 
-    <!-- Profile Edit Modal (Used for both user and admin) -->
+    <!-- Profile Edit Modal -->
     <div id="profile-edit-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden fade-in">
             <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50">
@@ -473,7 +481,16 @@
         }
 
         function openProfileEditModal() {
-            document.getElementById('edit-id').value = currentUser.id;
+            const editIdInput = document.getElementById('edit-id');
+            editIdInput.value = currentUser.id;
+            
+            // 一般ユーザーはID変更不可、管理者は変更可能
+            if (currentUser.role === 'admin') {
+                editIdInput.readOnly = false;
+            } else {
+                editIdInput.readOnly = true;
+            }
+            
             document.getElementById('old-pw').value = '';
             document.getElementById('new-pw').value = '';
             document.getElementById('new-pw-confirm').value = '';
@@ -506,7 +523,7 @@
                 if (users[uIdx].password !== oldPw) return showToast('現在のパスワードが違います', 'error');
                 if (newPw && newPw !== confirmPw) return showToast('新しいパスワードが一致しません', 'error');
                 
-                // If ID is changing, check for duplicates
+                // General user cannot change ID normally, but logic preserved for security check
                 if (newId !== currentUser.id && (users.some(u => u.email === newId) || newId === adminAuth.id)) {
                     return showToast('そのIDは既に使用されています', 'error');
                 }
@@ -514,7 +531,7 @@
                 users[uIdx].email = newId;
                 if (newPw) users[uIdx].password = newPw;
                 
-                // Update history if ID changed
+                // Update history if ID changed (though it shouldn't for general users now)
                 if (newId !== currentUser.id) {
                     requests.forEach(r => { if (r.userId === currentUser.id) r.userId = newId; });
                     localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
