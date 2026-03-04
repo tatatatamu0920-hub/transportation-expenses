@@ -4,208 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>清算navi - JEC連合化学一般埼玉県本部専用</title>
-    <!-- ファビコンの設定 -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235e6ad2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='3' width='16' height='15' rx='2'%3E%3C/rect%3E%3Cpath d='M4 11h16'%3E%3C/path%3E%3Cpath d='M8 15h.01'%3E%3C/path%3E%3Cpath d='M16 15h.01'%3E%3C/path%3E%3Cpath d='M6 21l2-3'%3E%3C/path%3E%3Cpath d='M18 21l-2-3'%3E%3C/path%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Quicksand:wght@500;600;700&display=swap');
-        
-        :root {
-            --bg-main: #f8fafb;
-            --card-white: #ffffff;
-            --primary: #5e6ad2;
-            --secondary: #f1f3f9;
-            --text-main: #2d3436;
-        }
-
-        body {
-            font-family: 'Quicksand', 'Noto Sans JP', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        /* スピンボタン（上下矢印）を非表示にする設定 */
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
-
-        .soft-card {
-            background: var(--card-white);
-            border-radius: 24px;
-            border: 1px solid rgba(0, 0, 0, 0.03);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-        }
-
-        /* Responsive Table adjustments */
-        @media (max-width: 767px) {
-            .responsive-table thead { display: none; }
-            .responsive-table tr {
-                display: block;
-                margin-bottom: 1rem;
-                padding: 1rem;
-                border: 1px solid #f1f3f9;
-                border-radius: 16px;
-                background: white;
-            }
-            .responsive-table td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0.5rem 0 !important;
-                border: none !important;
-                text-align: right !important;
-            }
-            .responsive-table td::before {
-                content: attr(data-label);
-                font-size: 10px;
-                font-weight: 700;
-                color: #94a3b8;
-                text-transform: uppercase;
-                text-align: left;
-            }
-        }
-
-        /* Desktop specific table styling: Force horizontal alignment */
-        @media (min-width: 768px) {
-            .responsive-table {
-                display: table !important;
-                width: 100% !important;
-                border-collapse: collapse;
-                table-layout: auto;
-            }
-            .responsive-table tr {
-                display: table-row !important;
-            }
-            .responsive-table td, .responsive-table th {
-                display: table-cell !important;
-                white-space: nowrap; 
-            }
-            .col-subject {
-                white-space: normal !important;
-                min-width: 150px;
-            }
-        }
-
-        .input-elegant {
-            background: var(--secondary);
-            border: 2px solid transparent;
-            border-radius: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .input-elegant:focus {
-            background: white;
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(94, 106, 210, 0.1);
-        }
-
-        /* Readonly style */
-        .input-elegant:read-only {
-            background: #eef1f6;
-            color: #94a3b8;
-            cursor: not-allowed;
-            border-color: transparent;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #6e7be3 0%, #5e6ad2 100%);
-            color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(94, 106, 210, 0.3);
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .count-badge {
-            background: #ef4444;
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            margin-left: 6px;
-        }
-
-        .favorite-tag {
-            background: #f1f3f9;
-            color: #64748b;
-            padding: 6px 14px;
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .modal-overlay {
-            background-color: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(4px);
-        }
-
+        :root { --bg-main: #f8fafb; --card-white: #ffffff; --primary: #5e6ad2; --secondary: #f1f3f9; --text-main: #2d3436; }
+        body { font-family: 'Quicksand', 'Noto Sans JP', sans-serif; background-color: var(--bg-main); color: var(--text-main); background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 40px 40px; }
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+        .soft-card { background: var(--card-white); border-radius: 24px; border: 1px solid rgba(0, 0, 0, 0.03); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04); }
+        @media (max-width: 767px) { .responsive-table thead { display: none; } .responsive-table tr { display: block; margin-bottom: 1rem; padding: 1rem; border: 1px solid #f1f3f9; border-radius: 16px; background: white; } .responsive-table td { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0 !important; border: none !important; text-align: right !important; } .responsive-table td::before { content: attr(data-label); font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; text-align: left; } }
+        @media (min-width: 768px) { .responsive-table { display: table !important; width: 100% !important; border-collapse: collapse; table-layout: auto; } .responsive-table tr { display: table-row !important; } .responsive-table td, .responsive-table th { display: table-cell !important; white-space: nowrap; } .col-subject { white-space: normal !important; min-width: 150px; } }
+        .input-elegant { background: var(--secondary); border: 2px solid transparent; border-radius: 12px; transition: all 0.2s ease; }
+        .input-elegant:focus { background: white; border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(94, 106, 210, 0.1); }
+        .input-elegant:read-only { background: #eef1f6; color: #94a3b8; cursor: not-allowed; border-color: transparent; }
+        .btn-primary { background: linear-gradient(135deg, #6e7be3 0%, #5e6ad2 100%); color: white; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(94, 106, 210, 0.3); }
+        .status-badge { padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+        .count-badge { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 6px; }
+        .favorite-tag { background: #f1f3f9; color: #64748b; padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s; }
+        .modal-overlay { background-color: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); }
         .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--primary); }
     </style>
 </head>
 <body class="min-h-screen pb-12">
+    <div id="loading-overlay" class="hidden">処理中...</div>
 
     <div id="app" class="max-w-4xl mx-auto py-8 px-4">
         <!-- Auth Screen -->
         <div id="auth-screen" class="max-w-md mx-auto mt-12 soft-card p-8 md:p-10 fade-in">
             <div class="text-center mb-8">
-                <!-- シンプルな電車のアイコン -->
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-50 text-indigo-500 rounded-2xl mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="4" y="3" width="16" height="15" rx="2"></rect>
-                        <path d="M4 11h16"></path>
-                        <path d="M8 15h.01"></path>
-                        <path d="M16 15h.01"></path>
-                        <path d="M6 21l2-3"></path>
-                        <path d="M18 21l-2-3"></path>
+                        <rect x="4" y="3" width="16" height="15" rx="2"></rect><path d="M4 11h16"></path><path d="M8 15h.01"></path><path d="M16 15h.01"></path><path d="M6 21l2-3"></path><path d="M18 21l-2-3"></path>
                     </svg>
                 </div>
                 <h1 class="text-2xl font-bold text-slate-800">清算navi</h1>
                 <p class="text-slate-400 text-[11px] font-bold mt-1 uppercase tracking-wider">JEC連合化学一般埼玉県本部専用</p>
             </div>
-
             <div class="flex p-1 bg-slate-100 rounded-xl mb-8">
                 <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm">ログイン</button>
                 <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 py-2 text-sm font-bold text-slate-500 rounded-lg">新規登録</button>
             </div>
-
-            <!-- Login Form with proper attributes for autocomplete -->
             <form id="login-form" class="space-y-5" onsubmit="event.preventDefault(); handleLogin();">
-                <input type="text" id="login-id" name="username" autocomplete="username" list="id-list" class="w-full px-4 py-3.5 input-elegant" placeholder="ID / Email">
-                <datalist id="id-list"></datalist>
+                <input type="email" id="login-id" name="username" autocomplete="username" class="w-full px-4 py-3.5 input-elegant" placeholder="ID / Email">
                 <input type="password" id="login-pw" name="password" autocomplete="current-password" class="w-full px-4 py-3.5 input-elegant" placeholder="Password">
                 <button type="submit" class="w-full btn-primary py-4 rounded-xl font-bold mt-2">ログインする</button>
-                <p class="text-center text-[10px] text-slate-300 font-bold tracking-widest mt-4">Ver 1.1.0</p>
+                <p class="text-center text-[10px] text-slate-300 font-bold tracking-widest mt-4">Ver 2.0.0 (Cloud Enabled)</p>
             </form>
-
             <form id="register-form" class="hidden space-y-5" onsubmit="event.preventDefault(); handleRegister();">
-                <input type="text" id="reg-name" name="name" class="w-full px-4 py-3.5 input-elegant" placeholder="埼玉 太郎">
-                <input type="email" id="reg-id" name="email" autocomplete="username" class="w-full px-4 py-3.5 input-elegant" placeholder="example@mail.com">
-                <input type="password" id="reg-pw" name="new-password" autocomplete="new-password" class="w-full px-4 py-3.5 input-elegant" placeholder="8文字以上の英数字">
+                <input type="text" id="reg-name" name="name" class="w-full px-4 py-3.5 input-elegant" placeholder="氏名 (埼玉 太郎)">
+                <input type="email" id="reg-id" name="email" autocomplete="username" class="w-full px-4 py-3.5 input-elegant" placeholder="Email">
+                <input type="password" id="reg-pw" name="new-password" autocomplete="new-password" class="w-full px-4 py-3.5 input-elegant" placeholder="パスワード (8文字以上)">
                 <button type="submit" class="w-full bg-slate-800 text-white py-4 rounded-xl font-bold mt-2">利用申請を送る</button>
-                <p class="text-center text-[10px] text-slate-300 font-bold tracking-widest mt-4">Ver 1.1.0</p>
             </form>
         </div>
 
@@ -215,15 +67,11 @@
                 <div>
                     <div class="flex items-center gap-3">
                         <h1 class="text-xl font-bold text-slate-800" id="welcome-msg">こんにちは</h1>
-                        <button id="pw-change-btn" onclick="openProfileEditModal()" class="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded hover:bg-slate-200 transition-colors font-bold uppercase tracking-tight">
-                            登録情報変更
-                        </button>
+                        <button onclick="openProfileEditModal()" class="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded hover:bg-slate-200 transition-colors font-bold uppercase tracking-tight">登録情報変更</button>
                     </div>
                     <div id="role-badge" class="inline-block px-2 py-0.5 bg-indigo-50 text-indigo-500 rounded text-[9px] font-bold uppercase tracking-wider mt-1"></div>
                 </div>
-                <button onclick="handleLogout()" class="px-4 py-2 bg-white text-slate-400 hover:text-rose-500 border border-slate-100 rounded-xl text-xs font-bold transition-all shadow-sm">
-                    ログアウト
-                </button>
+                <button onclick="handleLogout()" class="px-4 py-2 bg-white text-slate-400 hover:text-rose-500 border border-slate-100 rounded-xl text-xs font-bold transition-all shadow-sm">ログアウト</button>
             </header>
 
             <section id="user-view" class="hidden space-y-8">
@@ -231,126 +79,48 @@
                     <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-2">よく使うルート</h3>
                     <div id="favorites-container" class="flex flex-wrap gap-2 px-2"></div>
                 </div>
-
                 <div class="soft-card p-6 md:p-8">
                     <form id="expense-form" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-2">利用日</label>
-                                <input type="date" id="date" required class="w-full px-4 py-3 input-elegant">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase mb-2">件名 / 目的</label>
-                                <input type="text" id="subject" required class="w-full px-4 py-3 input-elegant" placeholder="例:第1回執行委員会">
-                            </div>
+                            <div><label class="block text-[11px] font-bold text-slate-400 uppercase mb-2">利用日</label><input type="date" id="date" required class="w-full px-4 py-3 input-elegant"></div>
+                            <div><label class="block text-[11px] font-bold text-slate-400 uppercase mb-2">件名 / 目的</label><input type="text" id="subject" required class="w-full px-4 py-3 input-elegant" placeholder="例:第1回執行委員会"></div>
                         </div>
-
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-3">
-                                <div class="flex justify-between items-center">
-                                    <label class="block text-[11px] font-bold text-slate-400 uppercase">ルート</label>
-                                    <button type="button" onclick="saveAsFavorite()" class="text-[10px] font-bold text-indigo-500 hover:text-indigo-700">★ このルートを保存</button>
-                                </div>
+                                <div class="flex justify-between items-center"><label class="block text-[11px] font-bold text-slate-400 uppercase">ルート</label><button type="button" onclick="saveAsFavorite()" class="text-[10px] font-bold text-indigo-500 hover:text-indigo-700">★ このルートを保存</button></div>
                                 <input type="text" id="from-station" placeholder="出発地" required class="w-full px-4 py-3 input-elegant">
                                 <input type="text" id="to-station" placeholder="目的地" required class="w-full px-4 py-3 input-elegant">
                             </div>
                             <div class="space-y-3">
                                 <label class="block text-[11px] font-bold text-slate-400 uppercase">金額設定</label>
                                 <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-                                    <div class="flex justify-between items-center mb-2 text-left">
-                                        <span class="text-[10px] font-bold text-slate-400 uppercase">片道単価</span>
-                                        <label class="flex items-center gap-2 cursor-pointer">
-                                            <span class="text-[10px] font-bold text-slate-400">往復</span>
-                                            <input type="checkbox" id="round-trip" onchange="calculateAmount()" class="w-4 h-4 rounded text-indigo-600">
-                                        </label>
-                                    </div>
+                                    <div class="flex justify-between items-center mb-2 text-left"><span class="text-[10px] font-bold text-slate-400 uppercase">片道単価</span><label class="flex items-center gap-2 cursor-pointer"><span class="text-[10px] font-bold text-slate-400">往復</span><input type="checkbox" id="round-trip" onchange="calculateAmount()" class="w-4 h-4 rounded text-indigo-600"></label></div>
                                     <input type="number" id="unit-price" placeholder="0" required oninput="calculateAmount()" class="w-full bg-transparent text-3xl font-bold text-indigo-600 border-none text-center focus:outline-none">
-                                    <div class="mt-4 pt-4 border-t border-slate-200 flex justify-between">
-                                        <span class="text-xs font-bold text-slate-400">合計</span>
-                                        <span class="text-xl font-bold text-slate-700" id="total-display">¥ 0</span>
-                                    </div>
+                                    <div class="mt-4 pt-4 border-t border-slate-200 flex justify-between"><span class="text-xs font-bold text-slate-400">合計</span><span class="text-xl font-bold text-slate-700" id="total-display">¥ 0</span></div>
                                 </div>
                             </div>
                         </div>
                         <button type="submit" class="w-full btn-primary py-4 rounded-2xl font-bold">申請を送信する</button>
                     </form>
                 </div>
-
                 <div class="soft-card overflow-hidden">
-                    <div class="px-4 md:px-8 py-4 bg-slate-50/50 border-b border-slate-50 flex justify-between items-center">
-                        <h2 class="text-sm font-bold text-slate-600">申請履歴</h2>
-                    </div>
-                    <div class="p-4 md:p-0 overflow-x-auto">
-                        <table class="w-full text-left responsive-table">
-                            <thead class="text-[10px] font-bold text-slate-400 uppercase bg-slate-50/30">
-                                <tr>
-                                    <th class="px-8 py-4">管理番号</th>
-                                    <th class="px-8 py-4">日付</th>
-                                    <th class="px-8 py-4">件名</th>
-                                    <th class="px-8 py-4 text-right">金額</th>
-                                    <th class="px-8 py-4 text-center">状態</th>
-                                    <th class="px-8 py-4 text-right">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-request-list" class="divide-y divide-slate-50"></tbody>
-                        </table>
-                    </div>
+                    <div class="px-4 md:px-8 py-4 bg-slate-50/50 border-b border-slate-50 flex justify-between items-center"><h2 class="text-sm font-bold text-slate-600">申請履歴</h2></div>
+                    <div class="overflow-x-auto"><table class="w-full text-left responsive-table"><thead class="text-[10px] font-bold text-slate-400 uppercase bg-slate-50/30"><tr><th class="px-8 py-4">管理番号</th><th class="px-8 py-4">日付</th><th class="px-8 py-4">件名</th><th class="px-8 py-4 text-right">金額</th><th class="px-8 py-4 text-center">状態</th><th class="px-8 py-4 text-right">操作</th></tr></thead><tbody id="user-request-list" class="divide-y divide-slate-50"></tbody></table></div>
                 </div>
             </section>
 
-            <!-- Admin View -->
             <section id="admin-view" class="hidden space-y-8">
                 <div class="flex gap-2 p-1 bg-slate-100 rounded-xl w-fit">
-                    <button onclick="switchAdminTab('requests')" id="admin-tab-req" class="px-6 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm flex items-center">
-                        申請一覧
-                        <span id="unprocessed-req-badge" class="count-badge hidden">0</span>
-                    </button>
-                    <button onclick="switchAdminTab('users')" id="admin-tab-users" class="px-6 py-2 text-sm font-bold text-slate-500 rounded-lg flex items-center">
-                        ユーザー管理
-                        <span id="unapproved-count-badge" class="count-badge hidden">0</span>
-                    </button>
+                    <button onclick="switchAdminTab('requests')" id="admin-tab-req" class="px-6 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm flex items-center">申請一覧<span id="unprocessed-req-badge" class="count-badge hidden">0</span></button>
+                    <button onclick="switchAdminTab('users')" id="admin-tab-users" class="px-6 py-2 text-sm font-bold text-slate-500 rounded-lg flex items-center">ユーザー管理<span id="unapproved-count-badge" class="count-badge hidden">0</span></button>
                 </div>
-
                 <div id="admin-requests-panel" class="soft-card overflow-hidden">
-                    <div class="p-6 md:p-8 flex justify-between items-center border-b border-slate-50">
-                        <h2 class="text-lg font-bold text-slate-700">精算管理パネル</h2>
-                        <button onclick="exportToCSV()" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-4 py-2 rounded-lg">CSV出力</button>
-                    </div>
-                    <div class="p-0 md:p-0">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm responsive-table">
-                                <thead class="text-[10px] font-bold text-slate-400 uppercase border-b bg-slate-50/50">
-                                    <tr>
-                                        <th class="px-4 py-4 text-left">管理番号</th>
-                                        <th class="px-4 py-4 text-left">申請者</th>
-                                        <th class="px-4 py-4 text-left">日付</th>
-                                        <th class="px-4 py-4 text-left">件名</th>
-                                        <th class="px-4 py-4 text-right">金額</th>
-                                        <th class="px-4 py-4 text-center">状態</th>
-                                        <th class="px-4 py-4 text-right">操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="admin-request-list" class="divide-y divide-slate-50"></tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <div class="p-6 md:p-8 flex justify-between items-center border-b border-slate-50"><h2 class="text-lg font-bold text-slate-700">精算管理パネル</h2><button onclick="exportToCSV()" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-4 py-2 rounded-lg">CSV出力</button></div>
+                    <div class="overflow-x-auto"><table class="w-full text-sm responsive-table"><thead class="text-[10px] font-bold text-slate-400 uppercase border-b bg-slate-50/50"><tr><th class="px-4 py-4 text-left">管理番号</th><th class="px-4 py-4 text-left">申請者</th><th class="px-4 py-4 text-left">日付</th><th class="px-4 py-4 text-left">件名</th><th class="px-4 py-4 text-right">金額</th><th class="px-4 py-4 text-center">状態</th><th class="px-4 py-4 text-right">操作</th></tr></thead><tbody id="admin-request-list" class="divide-y divide-slate-50"></tbody></table></div>
                 </div>
-
                 <div id="admin-users-panel" class="hidden soft-card overflow-hidden">
                     <div class="p-8 border-b border-slate-50"><h2 class="text-lg font-bold text-slate-700">ユーザー管理</h2></div>
-                    <div class="p-0 md:p-0 overflow-x-auto">
-                        <table class="w-full text-sm responsive-table">
-                            <thead class="text-[10px] font-bold text-slate-400 uppercase bg-slate-50/50">
-                                <tr>
-                                    <th class="px-8 py-4">氏名</th>
-                                    <th class="px-8 py-4">Email</th>
-                                    <th class="px-8 py-4">状態</th>
-                                    <th class="px-8 py-4 text-right">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-user-list" class="divide-y divide-slate-50"></tbody>
-                        </table>
-                    </div>
+                    <div class="overflow-x-auto"><table class="w-full text-sm responsive-table"><thead class="text-[10px] font-bold text-slate-400 uppercase bg-slate-50/50"><tr><th class="px-8 py-4">氏名</th><th class="px-8 py-4">Email</th><th class="px-8 py-4">状態</th><th class="px-8 py-4 text-right">操作</th></tr></thead><tbody id="admin-user-list" class="divide-y divide-slate-50"></tbody></table></div>
                 </div>
             </section>
         </div>
@@ -359,57 +129,30 @@
     <!-- Modals -->
     <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden fade-in">
-            <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-slate-700">申請詳細</h3>
-                <button onclick="closeModal('detail-modal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
-            </div>
+            <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50"><h3 class="font-bold text-slate-700">申請詳細</h3><button onclick="closeModal('detail-modal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button></div>
             <div id="modal-content" class="p-8 space-y-6"></div>
-            <div class="px-8 py-6 border-t flex justify-end">
-                <button onclick="closeModal('detail-modal')" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">閉じる</button>
-            </div>
+            <div class="px-8 py-6 border-t flex justify-end"><button onclick="closeModal('detail-modal')" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">閉じる</button></div>
         </div>
     </div>
 
-    <!-- Profile Edit Modal -->
+    <!-- Profile Modal (Admin tab logic integrated) -->
     <div id="profile-edit-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden fade-in">
-            <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-slate-700">登録情報変更</h3>
-                <button onclick="closeModal('profile-edit-modal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
-            </div>
-            
-            <!-- Tabs for Admin -->
+            <div class="px-8 py-6 border-b flex justify-between items-center bg-slate-50"><h3 class="font-bold text-slate-700">登録情報変更</h3><button onclick="closeModal('profile-edit-modal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button></div>
             <div id="profile-tabs" class="flex p-1 bg-slate-100 mx-8 mt-6 rounded-xl hidden">
                 <button onclick="switchProfileTab('id')" id="tab-prof-id" class="flex-1 py-2 text-[11px] font-bold bg-white text-indigo-600 rounded-lg shadow-sm">ID変更</button>
                 <button onclick="switchProfileTab('pw')" id="tab-prof-pw" class="flex-1 py-2 text-[11px] font-bold text-slate-500 rounded-lg">パスワード変更</button>
             </div>
-
             <div class="p-8 space-y-4">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1">現在のパスワード（必須）</label>
-                    <input type="password" id="old-pw" autocomplete="current-password" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="現在のパスワード">
-                </div>
-                
+                <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1">現在のパスワード (必須)</label><input type="password" id="old-pw" class="w-full px-4 py-2.5 input-elegant text-sm"></div>
                 <hr class="border-slate-100">
-
-                <!-- ID Change Fields -->
                 <div id="field-group-id" class="space-y-4">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1">新しいID (Email)</label>
-                        <input type="text" id="edit-id" autocomplete="username" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="新しいID / Email">
-                    </div>
+                    <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1">新しいEmail</label><input type="email" id="edit-id" class="w-full px-4 py-2.5 input-elegant text-sm"></div>
                 </div>
-
-                <!-- Password Change Fields -->
                 <div id="field-group-pw" class="hidden space-y-4">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1 text-indigo-500">新しいパスワード</label>
-                        <input type="password" id="new-pw" autocomplete="new-password" class="w-full px-4 py-2.5 input-elegant text-sm" placeholder="新しいパスワード">
-                        <input type="password" id="new-pw-confirm" autocomplete="new-password" class="w-full px-4 py-2.5 mt-2 input-elegant text-sm" placeholder="確認用入力">
-                    </div>
+                    <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 px-1">新しいパスワード</label><input type="password" id="new-pw" class="w-full px-4 py-2.5 input-elegant text-sm"><input type="password" id="new-pw-confirm" class="w-full px-4 py-2.5 mt-2 input-elegant text-sm" placeholder="確認用"></div>
                 </div>
             </div>
-
             <div class="px-8 py-6 border-t grid grid-cols-2 gap-3">
                 <button onclick="closeModal('profile-edit-modal')" class="px-6 py-2 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm">戻る</button>
                 <button onclick="handleProfileUpdate()" class="px-6 py-2 btn-primary font-bold rounded-xl text-sm">更新する</button>
@@ -417,277 +160,306 @@
         </div>
     </div>
 
-    <script>
-        // Initial Admin Settings (will be updated by localStorage if changed)
-        const DEFAULT_ADMIN_ID = "tatatatamu0920@gmail.com";
-        const DEFAULT_ADMIN_PW = "Tamutamu0920";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signOut, updatePassword, updateEmail } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, onSnapshot, addDoc, updateDoc, deleteDoc, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        let currentUser = null;
-        let requests = JSON.parse(localStorage.getItem('transport_requests_v4')) || [];
-        let users = JSON.parse(localStorage.getItem('transport_users_v4')) || [];
-        let userFavorites = JSON.parse(localStorage.getItem('user_favorites_v4')) || {};
+        // Firebase Configuration
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'transport-expense-app';
+
+        let userState = null;
+        let unsubscribeRequests = null;
+        let unsubscribeUsers = null;
+        let unsubscribeFavs = null;
         
-        // Admin credentials storage
-        let adminAuth = JSON.parse(localStorage.getItem('admin_auth_v4')) || { id: DEFAULT_ADMIN_ID, pw: DEFAULT_ADMIN_PW };
+        let allRequests = [];
+        let allUsers = [];
+        let favorites = [];
 
-        function generateManagementId() {
-            const now = new Date();
-            let year = now.getFullYear();
-            if (now.getMonth() < 3) year -= 1;
-            const yearStr = String(year).slice(-2);
-            const countInYear = requests.filter(r => r.mgmtId && r.mgmtId.startsWith(yearStr)).length;
-            return `${yearStr}-${String(countInYear + 1).padStart(3, '0')}`;
+        // Auth Listener
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // Check if user exists in our Firestore users collection
+                const userDoc = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'userRegistry', user.email || 'anonymous'));
+                if (userDoc.exists()) {
+                    userState = { ...userDoc.data(), uid: user.uid };
+                    initAppUI();
+                } else if (user.email === "tatatatamu0920@gmail.com") {
+                    // Pre-defined Admin
+                    userState = { name: "管理者", email: user.email, role: "admin", status: "承認済み", uid: user.uid };
+                    initAppUI();
+                } else {
+                    // Not in registry (or just signed in without doc)
+                    if (!window.isRegistering) handleLogout();
+                }
+            } else {
+                showAuthScreen();
+            }
+        });
+
+        async function handleLogin() {
+            setLoading(true);
+            const email = document.getElementById('login-id').value;
+            const pw = document.getElementById('login-pw').value;
+            
+            try {
+                // For a real production app with multiple users, we use Firebase Auth Email/PW.
+                // In this environment, we simulate it via the provided registry.
+                const userQuery = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'userRegistry', email));
+                
+                if (!userQuery.exists()) {
+                    showToast('ユーザーが見つかりません', 'error');
+                    return;
+                }
+                
+                const data = userQuery.data();
+                if (data.password !== pw) {
+                    showToast('パスワードが違います', 'error');
+                    return;
+                }
+
+                if (data.status === '承認待ち') {
+                    showToast('管理者の承認をお待ちください', 'error');
+                    return;
+                }
+
+                // Sign in anonymously to get a session (since we don't have full Email/PW auth set up in this preview)
+                await signInAnonymously(auth);
+                userState = { ...data, uid: auth.currentUser.uid };
+                initAppUI();
+            } catch (err) {
+                showToast('ログインエラーが発生しました', 'error');
+            } finally {
+                setLoading(false);
+            }
         }
 
-        function switchAuthTab(type) {
+        async function handleRegister() {
+            setLoading(true);
+            window.isRegistering = true;
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-id').value;
+            const pw = document.getElementById('reg-pw').value;
+
+            if (!name || !email || !pw) { showToast('入力不足です', 'error'); setLoading(false); return; }
+
+            try {
+                const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'userRegistry', email);
+                const check = await getDoc(userRef);
+                if (check.exists()) { showToast('既に登録されています', 'error'); return; }
+
+                await setDoc(userRef, { name, email, password: pw, status: '承認待ち', role: 'user', createdAt: Date.now() });
+                showToast('申請を送信しました。承認をお待ちください');
+                switchAuthTab('login');
+            } catch (err) {
+                showToast('登録に失敗しました', 'error');
+            } finally {
+                setLoading(false);
+                window.isRegistering = false;
+            }
+        }
+
+        function initAppUI() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            document.getElementById('welcome-msg').innerText = `${userState.name} 様`;
+            document.getElementById('role-badge').innerText = userState.role === 'admin' ? 'Administrator' : 'General User';
+
+            if (userState.role === 'admin') {
+                document.getElementById('admin-view').classList.remove('hidden');
+                document.getElementById('user-view').classList.add('hidden');
+                subscribeAdminData();
+            } else {
+                document.getElementById('user-view').classList.remove('hidden');
+                document.getElementById('admin-view').classList.add('hidden');
+                subscribeUserData();
+            }
+        }
+
+        function subscribeAdminData() {
+            const reqQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'requests'));
+            unsubscribeRequests = onSnapshot(reqQuery, (snap) => {
+                allRequests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                // Sort in memory as per RULE 2
+                allRequests.sort((a, b) => b.createdAt - a.createdAt);
+                renderAdminList();
+                updateBadges();
+            }, (err) => console.error(err));
+
+            const userQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'userRegistry'));
+            unsubscribeUsers = onSnapshot(userQuery, (snap) => {
+                allUsers = snap.docs.map(d => d.data());
+                renderUserManagement();
+                updateBadges();
+            });
+        }
+
+        function subscribeUserData() {
+            const reqQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'requests'));
+            unsubscribeRequests = onSnapshot(reqQuery, (snap) => {
+                allRequests = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(r => r.email === userState.email);
+                allRequests.sort((a, b) => b.createdAt - a.createdAt);
+                renderUserList();
+            });
+
+            const favRef = collection(db, 'artifacts', appId, 'users', userState.email, 'favorites');
+            unsubscribeFavs = onSnapshot(favRef, (snap) => {
+                favorites = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderFavorites();
+            });
+        }
+
+        // Action Handlers
+        window.handleLogin = handleLogin;
+        window.handleRegister = handleRegister;
+        window.handleLogout = async () => {
+            if (unsubscribeRequests) unsubscribeRequests();
+            if (unsubscribeUsers) unsubscribeUsers();
+            if (unsubscribeFavs) unsubscribeFavs();
+            await signOut(auth);
+            location.reload();
+        };
+
+        window.switchAuthTab = (type) => {
             const isLogin = type === 'login';
             document.getElementById('login-form').classList.toggle('hidden', !isLogin);
             document.getElementById('register-form').classList.toggle('hidden', isLogin);
             document.getElementById('tab-login').className = isLogin ? "flex-1 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm" : "flex-1 py-2 text-sm font-bold text-slate-500 rounded-lg";
             document.getElementById('tab-register').className = !isLogin ? "flex-1 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm" : "flex-1 py-2 text-sm font-bold text-slate-500 rounded-lg";
-        }
-
-        function handleRegister() {
-            const name = document.getElementById('reg-name').value;
-            const email = document.getElementById('reg-id').value;
-            const pw = document.getElementById('reg-pw').value;
-            if (!name || !email || !pw) return showToast('入力を完了してください', 'error');
-            if (users.some(u => u.email === email) || email === adminAuth.id) return showToast('既に登録されているか、管理者用アドレスです', 'error');
-            users.push({ name, email, password: pw, status: '承認待ち' });
-            localStorage.setItem('transport_users_v4', JSON.stringify(users));
-            showToast('利用申請を送りました');
-            switchAuthTab('login');
-        }
-
-        function handleLogin() {
-            const id = document.getElementById('login-id').value;
-            const pw = document.getElementById('login-pw').value;
-            if (id === adminAuth.id && pw === adminAuth.pw) {
-                currentUser = { id: adminAuth.id, name: '管理者', role: 'admin' };
-                initApp(); return;
-            }
-            const user = users.find(u => u.email === id && u.password === pw);
-            if (user) {
-                if (user.status === '承認待ち') return showToast('管理者の承認をお待ちください', 'error');
-                if (user.status === '却下') return showToast('承認が却下されました', 'error');
-                currentUser = { id: user.email, name: user.name, role: 'user' };
-                initApp();
-            } else {
-                showToast('ログイン情報が正しくありません', 'error');
-            }
-        }
-
-        function initApp() {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('main-content').classList.remove('hidden');
-            document.getElementById('welcome-msg').innerText = `${currentUser.name} 様`;
-            document.getElementById('role-badge').innerText = currentUser.role === 'admin' ? 'Administrator' : 'General User';
-            
-            if (currentUser.role === 'admin') {
-                document.getElementById('admin-view').classList.remove('hidden');
-                document.getElementById('user-view').classList.add('hidden');
-                updateBadges();
-                renderAdminList();
-                renderUserManagement();
-            } else {
-                document.getElementById('user-view').classList.remove('hidden');
-                document.getElementById('admin-view').classList.add('hidden');
-                renderUserList();
-                renderFavorites();
-            }
-        }
-
-        function switchProfileTab(type) {
-            const isId = type === 'id';
-            document.getElementById('field-group-id').classList.toggle('hidden', !isId);
-            document.getElementById('field-group-pw').classList.toggle('hidden', isId);
-            document.getElementById('tab-prof-id').className = isId ? "flex-1 py-2 text-[11px] font-bold bg-white text-indigo-600 rounded-lg shadow-sm" : "flex-1 py-2 text-[11px] font-bold text-slate-500 rounded-lg";
-            document.getElementById('tab-prof-pw').className = !isId ? "flex-1 py-2 text-[11px] font-bold bg-white text-indigo-600 rounded-lg shadow-sm" : "flex-1 py-2 text-[11px] font-bold text-slate-500 rounded-lg";
-        }
-
-        function openProfileEditModal() {
-            document.getElementById('edit-id').value = currentUser.id;
-            document.getElementById('old-pw').value = '';
-            document.getElementById('new-pw').value = '';
-            document.getElementById('new-pw-confirm').value = '';
-            
-            const tabs = document.getElementById('profile-tabs');
-            if (currentUser.role === 'admin') {
-                tabs.classList.remove('hidden');
-                switchProfileTab('id');
-            } else {
-                tabs.classList.add('hidden');
-                switchProfileTab('pw'); // 一般ユーザーはパスワード変更のみ表示
-                document.getElementById('field-group-id').classList.add('hidden'); // ID変更フィールドを隠す
-                document.getElementById('field-group-pw').classList.remove('hidden');
-            }
-            
-            document.getElementById('profile-edit-modal').classList.remove('hidden');
-        }
-
-        function handleProfileUpdate() {
-            const newId = document.getElementById('edit-id').value;
-            const oldPw = document.getElementById('old-pw').value;
-            const newPw = document.getElementById('new-pw').value;
-            const confirmPw = document.getElementById('new-pw-confirm').value;
-
-            if (!oldPw) return showToast('現在のパスワードを入力してください', 'error');
-
-            if (currentUser.role === 'admin') {
-                // Admin Update Logic
-                if (oldPw !== adminAuth.pw) return showToast('現在のパスワードが違います', 'error');
-                
-                const isIdTab = !document.getElementById('field-group-id').classList.contains('hidden');
-                
-                if (isIdTab) {
-                    if (!newId) return showToast('IDを入力してください', 'error');
-                    adminAuth.id = newId;
-                    currentUser.id = newId;
-                    showToast('管理者のIDを更新しました');
-                } else {
-                    if (!newPw) return showToast('新しいパスワードを入力してください', 'error');
-                    if (newPw !== confirmPw) return showToast('パスワードが一致しません', 'error');
-                    adminAuth.pw = newPw;
-                    showToast('管理者のパスワードを更新しました');
-                }
-                
-                localStorage.setItem('admin_auth_v4', JSON.stringify(adminAuth));
-            } else {
-                // General User Update Logic
-                const uIdx = users.findIndex(u => u.email === currentUser.id);
-                if (uIdx === -1) return;
-                if (users[uIdx].password !== oldPw) return showToast('現在のパスワードが違います', 'error');
-                if (!newPw) return showToast('新しいパスワードを入力してください', 'error');
-                if (newPw !== confirmPw) return showToast('パスワードが一致しません', 'error');
-                
-                users[uIdx].password = newPw;
-                localStorage.setItem('transport_users_v4', JSON.stringify(users));
-                showToast('パスワードを更新しました');
-            }
-            
-            closeModal('profile-edit-modal');
-            initApp();
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            document.getElementById('auth-screen').classList.remove('hidden');
-            document.getElementById('main-content').classList.add('hidden');
-        }
-
-        document.getElementById('expense-form').onsubmit = function(e) {
-            e.preventDefault();
-            const newReq = {
-                id: Date.now(),
-                mgmtId: generateManagementId(),
-                userId: currentUser.id,
-                userName: currentUser.name,
-                date: document.getElementById('date').value,
-                subject: document.getElementById('subject').value,
-                from: document.getElementById('from-station').value,
-                to: document.getElementById('to-station').value,
-                totalPrice: calculateAmount(),
-                status: '申請中'
-            };
-            requests.unshift(newReq);
-            localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
-            renderUserList();
-            this.reset();
-            calculateAmount();
-            showToast('申請を完了しました');
         };
 
-        function renderUserList() {
+        window.calculateAmount = () => {
+            const price = parseInt(document.getElementById('unit-price').value) || 0;
+            const total = document.getElementById('round-trip').checked ? price * 2 : price;
+            document.getElementById('total-display').innerText = `¥ ${total.toLocaleString()}`;
+            return total;
+        };
+
+        document.getElementById('expense-form').onsubmit = async function(e) {
+            e.preventDefault();
+            setLoading(true);
+            try {
+                const now = new Date();
+                const year = now.getFullYear();
+                const mgmtId = `${String(year).slice(-2)}-${Math.floor(Math.random()*900)+100}`; // Simplified cloud-friendly ID
+                
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'requests'), {
+                    mgmtId,
+                    email: userState.email,
+                    userName: userState.name,
+                    date: document.getElementById('date').value,
+                    subject: document.getElementById('subject').value,
+                    from: document.getElementById('from-station').value,
+                    to: document.getElementById('to-station').value,
+                    totalPrice: calculateAmount(),
+                    status: '申請中',
+                    createdAt: Date.now()
+                });
+                showToast('申請完了');
+                this.reset();
+                calculateAmount();
+            } catch (err) {
+                showToast('送信失敗', 'error');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        window.approveRequest = async (id) => {
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'requests', id), { status: '受理' });
+            showToast('受理しました');
+        };
+
+        window.deleteRequest = async (id) => {
+            if (confirm('削除しますか？')) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'requests', id));
+        };
+
+        window.setUserStatus = async (email, status) => {
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'userRegistry', email), { status });
+            showToast('更新しました');
+        };
+
+        window.saveAsFavorite = async () => {
+            const from = document.getElementById('from-station').value;
+            const to = document.getElementById('to-station').value;
+            const unit = document.getElementById('unit-price').value;
+            const round = document.getElementById('round-trip').checked;
+            if (!from || !to) return;
+            await addDoc(collection(db, 'artifacts', appId, 'users', userState.email, 'favorites'), { from, to, unit, round });
+            showToast('ルート保存完了');
+        };
+
+        window.removeFavorite = async (e, id) => {
+            e.stopPropagation();
+            await deleteDoc(doc(db, 'artifacts', appId, 'users', userState.email, 'favorites', id));
+        };
+
+        window.applyFavorite = (id) => {
+            const f = favorites.find(fav => fav.id === id);
+            if (!f) return;
+            document.getElementById('from-station').value = f.from;
+            document.getElementById('to-station').value = f.to;
+            document.getElementById('unit-price').value = f.unit;
+            document.getElementById('round-trip').checked = f.round;
+            calculateAmount();
+        };
+
+        // Render Functions (Globals needed for HTML onclicks)
+        window.renderUserList = () => {
             const list = document.getElementById('user-request-list');
-            const userReqs = requests.filter(r => r.userId === currentUser.id);
-            list.innerHTML = userReqs.length ? userReqs.map(r => `
+            list.innerHTML = allRequests.map(r => `
                 <tr class="hover:bg-slate-50 transition-all">
                     <td data-label="ID" class="px-8 py-5 text-[10px] font-bold text-indigo-500">#${r.mgmtId}</td>
                     <td data-label="日付" class="px-8 py-5 text-xs text-slate-500">${r.date}</td>
                     <td data-label="件名" class="px-8 py-5 text-sm font-bold text-slate-700 col-subject">${r.subject}</td>
                     <td data-label="金額" class="px-8 py-5 text-right text-sm font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</td>
-                    <td data-label="状態" class="px-8 py-5 text-center">
-                        <span class="status-badge ${r.status === '受理' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}">${r.status}</span>
-                    </td>
-                    <td data-label="操作" class="px-8 py-5 text-right">
-                        ${r.status === '申請中' ? `<button onclick="cancelRequest(${r.id})" class="text-[10px] text-rose-400 font-bold">取消</button>` : '-'}
-                    </td>
+                    <td data-label="状態" class="px-8 py-5 text-center"><span class="status-badge ${r.status === '受理' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}">${r.status}</span></td>
+                    <td data-label="操作" class="px-8 py-5 text-right">${r.status === '申請中' ? `<button onclick="deleteRequest('${r.id}')" class="text-[10px] text-rose-400 font-bold">取消</button>` : '-'}</td>
                 </tr>
-            `).join('') : '<tr><td colspan="6" class="p-10 text-center text-slate-300 italic text-xs">データなし</td></tr>';
-        }
+            `).join('') || '<tr><td colspan="6" class="p-10 text-center text-slate-300 italic text-xs">データなし</td></tr>';
+        };
 
-        function cancelRequest(id) {
-            if (!confirm('取り消しますか？')) return;
-            requests = requests.filter(r => r.id !== id);
-            localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
-            renderUserList();
-        }
-
-        function renderAdminList() {
+        window.renderAdminList = () => {
             const list = document.getElementById('admin-request-list');
-            list.innerHTML = requests.map(r => `
+            list.innerHTML = allRequests.map(r => `
                 <tr class="hover:bg-slate-50">
-                    <td data-label="ID" class="px-4 py-5"><button onclick="openDetail(${r.id})" class="text-[11px] font-bold text-indigo-600 hover:underline">#${r.mgmtId}</button></td>
+                    <td data-label="ID" class="px-4 py-5"><button onclick="openDetail('${r.id}')" class="text-[11px] font-bold text-indigo-600 hover:underline">#${r.mgmtId}</button></td>
                     <td data-label="申請者" class="px-4 py-5 font-bold text-slate-700 text-xs">${r.userName}</td>
                     <td data-label="日付" class="px-4 py-5 text-xs text-slate-500">${r.date}</td>
                     <td data-label="件名" class="px-4 py-5 text-xs text-slate-600 col-subject">${r.subject}</td>
                     <td data-label="金額" class="px-4 py-5 text-right font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</td>
-                    <td data-label="状態" class="px-4 py-5 text-center">
-                        <span class="status-badge ${r.status === '受理' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}">${r.status}</span>
-                    </td>
-                    <td data-label="操作" class="px-4 py-5 text-right">
-                        ${r.status === '申請中' ? `<button onclick="approveRequest(${r.id})" class="bg-indigo-600 text-white text-[10px] px-3 py-1.5 rounded-lg font-bold">承認</button>` : ''}
-                        <button onclick="deleteRequest(${r.id})" class="text-rose-400 text-[10px] ml-2 font-bold">削除</button>
-                    </td>
+                    <td data-label="状態" class="px-4 py-5 text-center"><span class="status-badge ${r.status === '受理' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}">${r.status}</span></td>
+                    <td data-label="操作" class="px-4 py-5 text-right">${r.status === '申請中' ? `<button onclick="approveRequest('${r.id}')" class="bg-indigo-600 text-white text-[10px] px-3 py-1.5 rounded-lg font-bold">承認</button>` : ''}<button onclick="deleteRequest('${r.id}')" class="text-rose-400 text-[10px] ml-2 font-bold">削除</button></td>
                 </tr>
             `).join('');
-        }
+        };
 
-        function approveRequest(id) {
-            const req = requests.find(r => r.id === id);
-            if (req) { req.status = '受理'; localStorage.setItem('transport_requests_v4', JSON.stringify(requests)); renderAdminList(); updateBadges(); showToast('受理しました'); }
-        }
-
-        function deleteRequest(id) {
-            if (!confirm('削除しますか？')) return;
-            requests = requests.filter(r => r.id !== id);
-            localStorage.setItem('transport_requests_v4', JSON.stringify(requests));
-            renderAdminList(); updateBadges();
-        }
-
-        function renderUserManagement() {
+        window.renderUserManagement = () => {
             const list = document.getElementById('admin-user-list');
-            list.innerHTML = users.map(u => `
+            list.innerHTML = allUsers.map(u => `
                 <tr>
                     <td data-label="氏名" class="px-8 py-5 font-bold text-slate-700">${u.name}</td>
                     <td data-label="Email" class="px-8 py-5 text-slate-400 text-xs">${u.email}</td>
-                    <td data-label="状態" class="px-8 py-5">
-                        <span class="status-badge ${u.status === '承認済み' ? 'bg-emerald-50 text-emerald-500' : u.status === '却下' ? 'bg-rose-50 text-rose-500' : 'bg-amber-50 text-amber-500'}">${u.status}</span>
-                    </td>
-                    <td data-label="操作" class="px-8 py-5 text-right">
-                        ${u.status === '承認待ち' ? `
-                            <button onclick="setUserStatus('${u.email}', '承認済み')" class="text-xs font-bold text-emerald-600">承認</button>
-                            <button onclick="setUserStatus('${u.email}', '却下')" class="text-xs font-bold text-rose-400 ml-2">却下</button>
-                        ` : `<button onclick="deleteUser('${u.email}')" class="text-xs font-bold text-slate-400 hover:text-rose-500">削除</button>`}
-                    </td>
+                    <td data-label="状態" class="px-8 py-5"><span class="status-badge ${u.status === '承認済み' ? 'bg-emerald-50 text-emerald-500' : u.status === '却下' ? 'bg-rose-50 text-rose-500' : 'bg-amber-50 text-amber-500'}">${u.status}</span></td>
+                    <td data-label="操作" class="px-8 py-5 text-right">${u.status === '承認待ち' ? `<button onclick="setUserStatus('${u.email}', '承認済み')" class="text-xs font-bold text-emerald-600">承認</button><button onclick="setUserStatus('${u.email}', '却下')" class="text-xs font-bold text-rose-400 ml-2">却下</button>` : '-'}</td>
                 </tr>
             `).join('');
-        }
+        };
 
-        function setUserStatus(email, status) {
-            const uIdx = users.findIndex(u => u.email === email);
-            if (uIdx !== -1) { users[uIdx].status = status; localStorage.setItem('transport_users_v4', JSON.stringify(users)); renderUserManagement(); updateBadges(); }
-        }
+        window.renderFavorites = () => {
+            const container = document.getElementById('favorites-container');
+            container.innerHTML = favorites.map(f => `
+                <div class="favorite-tag" onclick="applyFavorite('${f.id}')"><span>${f.from} ⇄ ${f.to}</span><button onclick="removeFavorite(event, '${f.id}')" class="ml-1 text-slate-300 hover:text-rose-500">&times;</button></div>
+            `).join('') || '<p class="text-[10px] text-slate-300 italic">保存されたルートはありません</p>';
+        };
 
-        function deleteUser(email) {
-            if (!confirm('削除しますか？')) return;
-            users = users.filter(u => u.email !== email);
-            localStorage.setItem('transport_users_v4', JSON.stringify(users));
-            renderUserManagement();
-        }
-
-        function openDetail(id) {
-            const r = requests.find(req => req.id === id);
+        window.openDetail = (id) => {
+            const r = allRequests.find(req => req.id === id);
             if (!r) return;
             document.getElementById('modal-content').innerHTML = `
                 <div class="space-y-4 text-left">
@@ -699,97 +471,109 @@
                     <div class="bg-slate-50 p-4 rounded-xl">
                         <p class="text-[9px] text-slate-400 font-bold uppercase">ルート</p>
                         <p class="text-sm font-bold text-slate-700">${r.from} ⇄ ${r.to}</p>
-                        <p class="text-xs text-slate-500 mt-1">目的: ${r.subject}</p>
                     </div>
-                    <div class="bg-indigo-50 p-4 rounded-xl flex justify-between items-center">
-                        <span class="text-xs font-bold text-indigo-400">合計</span>
-                        <span class="text-xl font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</span>
-                    </div>
-                </div>
-            `;
+                    <div class="bg-indigo-50 p-4 rounded-xl flex justify-between items-center"><span class="text-xs font-bold text-indigo-400">合計</span><span class="text-xl font-bold text-indigo-600">¥ ${r.totalPrice.toLocaleString()}</span></div>
+                </div>`;
             document.getElementById('detail-modal').classList.remove('hidden');
-        }
+        };
 
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
 
-        function calculateAmount() {
-            const price = parseInt(document.getElementById('unit-price').value) || 0;
-            const total = document.getElementById('round-trip').checked ? price * 2 : price;
-            document.getElementById('total-display').innerText = `¥ ${total.toLocaleString()}`;
-            return total;
-        }
-
-        function saveAsFavorite() {
-            const from = document.getElementById('from-station').value;
-            const to = document.getElementById('to-station').value;
-            const unit = document.getElementById('unit-price').value;
-            const round = document.getElementById('round-trip').checked;
-            if (!from || !to || !unit) return;
-            if (!userFavorites[currentUser.id]) userFavorites[currentUser.id] = [];
-            userFavorites[currentUser.id].push({ from, to, unit, round });
-            localStorage.setItem('user_favorites_v4', JSON.stringify(userFavorites));
-            renderFavorites();
-        }
-
-        function renderFavorites() {
-            const container = document.getElementById('favorites-container');
-            const favs = userFavorites[currentUser.id] || [];
-            container.innerHTML = favs.length ? favs.map((f, i) => `
-                <div class="favorite-tag" onclick="applyFavorite(${i})">
-                    <span>${f.from} ⇄ ${f.to}</span>
-                    <button onclick="removeFavorite(event, ${i})" class="ml-1 text-slate-300 hover:text-rose-500">&times;</button>
-                </div>
-            `).join('') : '<p class="text-[10px] text-slate-300 italic">保存されたルートはありません</p>';
-        }
-
-        function applyFavorite(i) {
-            const f = userFavorites[currentUser.id][i];
-            document.getElementById('from-station').value = f.from;
-            document.getElementById('to-station').value = f.to;
-            document.getElementById('unit-price').value = f.unit;
-            document.getElementById('round-trip').checked = f.round;
-            calculateAmount();
-        }
-
-        function removeFavorite(e, i) {
-            e.stopPropagation();
-            userFavorites[currentUser.id].splice(i, 1);
-            localStorage.setItem('user_favorites_v4', JSON.stringify(userFavorites));
-            renderFavorites();
-        }
-
-        function updateBadges() {
-            const uCount = users.filter(u => u.status === '承認待ち').length;
-            document.getElementById('unapproved-count-badge').innerText = uCount;
-            document.getElementById('unapproved-count-badge').classList.toggle('hidden', uCount === 0);
-            const rCount = requests.filter(r => r.status === '申請中').length;
-            document.getElementById('unprocessed-req-badge').innerText = rCount;
-            document.getElementById('unprocessed-req-badge').classList.toggle('hidden', rCount === 0);
-        }
-
-        function switchAdminTab(type) {
-            const isReq = type === 'requests';
-            document.getElementById('admin-requests-panel').classList.toggle('hidden', !isReq);
-            document.getElementById('admin-users-panel').classList.toggle('hidden', isReq);
-            document.getElementById('admin-tab-req').className = isReq ? "px-6 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm flex items-center" : "px-6 py-2 text-sm font-bold text-slate-500 rounded-lg flex items-center";
-            document.getElementById('admin-tab-users').className = !isReq ? "px-6 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm flex items-center" : "px-6 py-2 text-sm font-bold text-slate-500 rounded-lg flex items-center";
-        }
-
-        function showToast(msg, type = 'success') {
+        // Helpers
+        function setLoading(show) { document.getElementById('loading-overlay').classList.toggle('hidden', !show); }
+        function showAuthScreen() { document.getElementById('auth-screen').classList.remove('hidden'); document.getElementById('main-content').classList.add('hidden'); }
+        function showToast(msg, type='success') {
             const toast = document.createElement('div');
             toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl shadow-xl z-[100] text-sm font-bold border ${type === 'success' ? 'bg-white text-indigo-600 border-indigo-100' : 'bg-rose-50 text-rose-600 border-rose-100'} fade-in`;
-            toast.innerText = msg;
-            document.body.appendChild(toast);
+            toast.innerText = msg; document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
 
-        function exportToCSV() {
-            const csv = [["ID","日付","氏名","件名","金額","状態"], ...requests.map(r => [r.mgmtId, r.date, r.userName, `"${r.subject}"`, r.totalPrice, r.status])].map(e => e.join(",")).join("\n");
+        window.updateBadges = () => {
+            const uCount = allUsers.filter(u => u.status === '承認待ち').length;
+            document.getElementById('unapproved-count-badge').innerText = uCount;
+            document.getElementById('unapproved-count-badge').classList.toggle('hidden', uCount === 0);
+            const rCount = allRequests.filter(r => r.status === '申請中').length;
+            document.getElementById('unprocessed-req-badge').innerText = rCount;
+            document.getElementById('unprocessed-req-badge').classList.toggle('hidden', rCount === 0);
+        };
+
+        window.switchAdminTab = (type) => {
+            const isReq = type === 'requests';
+            document.getElementById('admin-requests-panel').classList.toggle('hidden', !isReq);
+            document.getElementById('admin-users-panel').classList.toggle('hidden', isReq);
+            document.getElementById('admin-tab-req').className = isReq ? "px-6 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm" : "px-6 py-2 text-sm font-bold text-slate-500 rounded-lg";
+            document.getElementById('admin-tab-users').className = !isReq ? "px-6 py-2 text-sm font-bold bg-white text-indigo-600 rounded-lg shadow-sm" : "px-6 py-2 text-sm font-bold text-slate-500 rounded-lg";
+        };
+
+        window.exportToCSV = () => {
+            const csv = [["ID","日付","氏名","件名","金額","状態"], ...allRequests.map(r => [r.mgmtId, r.date, r.userName, `"${r.subject}"`, r.totalPrice, r.status])].map(e => e.join(",")).join("\n");
             const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv' });
             const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `seisan_list.csv`; a.click();
-        }
+        };
 
-        window.onload = function() { document.getElementById('date').valueAsDate = new Date(); };
+        // Profile Update Implementation (Firestore based)
+        window.openProfileEditModal = () => {
+            document.getElementById('edit-id').value = userState.email;
+            document.getElementById('old-pw').value = '';
+            document.getElementById('new-pw').value = '';
+            document.getElementById('new-pw-confirm').value = '';
+            
+            const tabs = document.getElementById('profile-tabs');
+            if (userState.role === 'admin') {
+                tabs.classList.remove('hidden');
+                switchProfileTab('id');
+            } else {
+                tabs.classList.add('hidden');
+                switchProfileTab('pw');
+                document.getElementById('field-group-id').classList.add('hidden');
+                document.getElementById('field-group-pw').classList.remove('hidden');
+            }
+            document.getElementById('profile-edit-modal').classList.remove('hidden');
+        };
+
+        window.switchProfileTab = (type) => {
+            const isId = type === 'id';
+            document.getElementById('field-group-id').classList.toggle('hidden', !isId);
+            document.getElementById('field-group-pw').classList.toggle('hidden', isId);
+            document.getElementById('tab-prof-id').className = isId ? "flex-1 py-2 text-[11px] font-bold bg-white text-indigo-600 rounded-lg shadow-sm" : "flex-1 py-2 text-[11px] font-bold text-slate-500 rounded-lg";
+            document.getElementById('tab-prof-pw').className = !isId ? "flex-1 py-2 text-[11px] font-bold bg-white text-indigo-600 rounded-lg shadow-sm" : "flex-1 py-2 text-[11px] font-bold text-slate-500 rounded-lg";
+        };
+
+        window.handleProfileUpdate = async () => {
+            setLoading(true);
+            const oldPw = document.getElementById('old-pw').value;
+            const newId = document.getElementById('edit-id').value;
+            const newPw = document.getElementById('new-pw').value;
+            const confirmPw = document.getElementById('new-pw-confirm').value;
+
+            try {
+                const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'userRegistry', userState.email);
+                const userDoc = await getDoc(userRef);
+                if (userDoc.data().password !== oldPw) { showToast('現在のパスワードが違います', 'error'); return; }
+
+                const isIdTab = !document.getElementById('field-group-id').classList.contains('hidden');
+                if (isIdTab && userState.role === 'admin') {
+                    if (newId === userState.email) { showToast('IDに変更がありません'); return; }
+                    // Update admin email (complex in simple registry, but here we update the doc key)
+                    const newData = { ...userDoc.data(), email: newId };
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'userRegistry', newId), newData);
+                    await deleteDoc(userRef);
+                    showToast('管理者IDを更新しました');
+                } else {
+                    if (newPw !== confirmPw) { showToast('確認用パスワードが一致しません', 'error'); return; }
+                    await updateDoc(userRef, { password: newPw });
+                    showToast('パスワードを更新しました');
+                }
+                closeModal('profile-edit-modal');
+            } catch (err) {
+                showToast('更新に失敗しました', 'error');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        window.onload = () => { document.getElementById('date').valueAsDate = new Date(); };
     </script>
 </body>
 </html>
